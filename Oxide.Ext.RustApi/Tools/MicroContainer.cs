@@ -26,16 +26,22 @@ namespace Oxide.Ext.RustApi.Tools
         /// </summary>
         /// <typeparam name="TRegistration">Registration type (e.g. interface).</typeparam>
         /// <typeparam name="TImplementation">Implementation type.</typeparam>
-        public void Add<TRegistration, TImplementation>() where TImplementation : TRegistration =>
+        public MicroContainer Add<TRegistration, TImplementation>() where TImplementation : TRegistration
+        {
             _registrations[typeof(TRegistration)] = () => DefaultBuilder(typeof(TImplementation));
+            return this;
+        }
 
         /// <summary>
         /// Add class to container.
         /// Duplicate will override previous registration.
         /// </summary>
         /// <typeparam name="TRegistration">Registration type.</typeparam>
-        public void Add<TRegistration>() =>
+        public MicroContainer Add<TRegistration>()
+        {
             _registrations[typeof(TRegistration)] = () => DefaultBuilder(typeof(TRegistration));
+            return this;
+        }
 
         /// <summary>
         /// Add instance to container.
@@ -43,8 +49,11 @@ namespace Oxide.Ext.RustApi.Tools
         /// </summary>
         /// <typeparam name="TRegistration">Registration type.</typeparam>
         /// <param name="instance">Instance of registration type.</param>
-        public void Add<TRegistration>(TRegistration instance) =>
+        public MicroContainer Add<TRegistration>(TRegistration instance)
+        {
             _registrations[typeof(TRegistration)] = () => instance;
+            return this;
+        }
 
         /// <summary>
         /// Get instance by registration type.
