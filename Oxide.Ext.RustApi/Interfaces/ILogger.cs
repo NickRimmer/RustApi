@@ -5,7 +5,7 @@ namespace Oxide.Ext.RustApi.Interfaces
     /// <summary>
     /// Internal logger.
     /// </summary>
-    public interface ILogger
+    public interface ILogger<T>
     {
         /// <summary>
         /// Log debug information.
