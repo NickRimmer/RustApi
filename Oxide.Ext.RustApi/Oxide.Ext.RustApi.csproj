@@ -15,13 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Oxide.Core" Version="2.0.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <PackageReference Include="Unity3D.UnityEngine" Version="2018.3.5.1" />
   </ItemGroup>
 
 </Project>
