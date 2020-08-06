@@ -5,12 +5,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="NSubstitute" Version="1.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj" />
+    <ProjectReference Include="..\..\Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj" />
   </ItemGroup>
 
 </Project>

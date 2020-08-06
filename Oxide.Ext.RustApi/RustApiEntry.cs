@@ -57,7 +57,15 @@ namespace Oxide.Ext.RustApi
                 .AddSingle(new ApiServerOptions { Endpoint = "http://localhost:6667" }) //TODO read from configuration
                 .AddSingle<ApiServer>();
 
+            var apiServer = result.Get<ApiServer>();
+            ConfigureRoutes(apiServer);
+
             return result;
+        }
+
+        private static void ConfigureRoutes(ApiServer apiServer)
+        {
+            //TODO specify route handlers
         }
     }
 }

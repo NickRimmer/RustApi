@@ -1,10 +1,10 @@
-﻿using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models.Options;
-using Oxide.Ext.RustApi.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models.Options;
+using Oxide.Ext.RustApi.Services;
 
 namespace Oxide.Ext.RustApi.Tests.ConsoleApp
 {
@@ -14,7 +14,11 @@ namespace Oxide.Ext.RustApi.Tests.ConsoleApp
         {
             var container = new MicroContainer()
                 .Add(typeof(ILogger<>), typeof(ConsoleLogger<>))
-                .AddSingle(new ApiServerOptions { Endpoint = "http://localhost:6667" })
+                .AddSingle(new ApiServerOptions
+                {
+                    Endpoint = "http://localhost:6667",
+                    Secret = "secret",
+                })
                 .AddSingle<ApiServer>();
 
             container.Get<ApiServer>()
