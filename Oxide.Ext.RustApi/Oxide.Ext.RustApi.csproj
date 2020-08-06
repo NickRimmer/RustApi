@@ -2,6 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Product>RustApi</Product>
+    <Company>Nick Rimmer</Company>
+    <Version>1.0.0</Version>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <Copyright>Nick Rimmer (DIPTEAM)</Copyright>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Oxide.Core" Version="2.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
