@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oxide.Ext.RustApi", "Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj", "{47543A05-D98B-4A81-80F6-858588F88F44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oxide.Ext.RustApi", "Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj", "{47543A05-D98B-4A81-80F6-858588F88F44}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{429DD81C-DB53-40CF-931C-3A2BE823DE38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oxide.Ext.RustApi.Tests.Unit", "Tests\Oxide.Ext.RustApi.Tests.Unit\Oxide.Ext.RustApi.Tests.Unit.csproj", "{239E0F68-7543-4E52-BAD4-E25632C4410D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oxide.Ext.RustApi.Tests.Unit", "Tests\Oxide.Ext.RustApi.Tests.Unit\Oxide.Ext.RustApi.Tests.Unit.csproj", "{239E0F68-7543-4E52-BAD4-E25632C4410D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2A3ADC9D-67B4-4E2A-83D3-68FCC3CDBF78}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
+		LICENSE.md = LICENSE.md
+		nuget.config = nuget.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
