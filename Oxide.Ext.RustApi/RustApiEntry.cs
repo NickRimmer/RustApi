@@ -11,7 +11,7 @@ namespace Oxide.Ext.RustApi
     /// <summary>
     /// General entry point for UMod extension.
     /// </summary>
-    public class RustApiEntry : Extension
+    public class RustApiEntry : RustApiBase
     {
         private readonly MicroContainer _services;
         private readonly ILogger<RustApiEntry> _logger;
@@ -22,15 +22,6 @@ namespace Oxide.Ext.RustApi
             _services = BuildServices();
             _logger = _services.Get<ILogger<RustApiEntry>>();
         }
-
-        /// <inheritdoc />
-        public override string Name => AssemblyInfo.ReadAssemblyAttribute<AssemblyProductAttribute>().Product;
-
-        /// <inheritdoc />
-        public override string Author => AssemblyInfo.ReadAssemblyAttribute<AssemblyCompanyAttribute>().Company;
-
-        /// <inheritdoc />
-        public override VersionNumber Version => AssemblyInfo.ReadAssemblyVersion();
 
         /// <inheritdoc />
         public override void OnModLoad()
@@ -57,7 +48,15 @@ namespace Oxide.Ext.RustApi
                 .AddSingle(new ApiServerOptions { Endpoint = "http://localhost:6667" }) //TODO read from configuration
                 .AddSingle<ApiServer>();
 
+            var apiServer = result.Get<ApiServer>();
+            ConfigureRoutes(apiServer);
+
             return result;
+        }
+
+        private static void ConfigureRoutes(ApiServer apiServer)
+        {
+            //TODO specify route handlers
         }
     }
 }

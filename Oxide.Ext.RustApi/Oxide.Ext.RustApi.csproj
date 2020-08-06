@@ -12,6 +12,10 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;SKIP_SIGN_VALIDATION</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Oxide.Core" Version="2.0.*" />

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models.Options;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
-using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models.Options;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -15,17 +16,19 @@ namespace Oxide.Ext.RustApi.Services
     /// </summary>
     public class ApiServer : IDisposable
     {
+        private readonly ApiServerOptions _options;
         private readonly ILogger<ApiServer> _logger;
         private HttpListener _listener;
         private Dictionary<string, Func<string, object>> _routes;
 
         public ApiServer(ApiServerOptions options, ILogger<ApiServer> logger)
         {
+            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _listener = new HttpListener();
             _routes = new Dictionary<string, Func<string, object>>();
 
-            SetupListener(options);
+            SetupListener();
         }
 
         /// <summary>
@@ -49,7 +52,6 @@ namespace Oxide.Ext.RustApi.Services
                 return callback.Invoke(data);
             });
 
-            _logger.Info($"Api route: {url}");
             return this;
         }
 
@@ -65,8 +67,6 @@ namespace Oxide.Ext.RustApi.Services
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
             _routes.Add(url, (_) => callback.Invoke());
-
-            _logger.Info($"Api route: {url}");
             return this;
         }
 
@@ -134,10 +134,9 @@ namespace Oxide.Ext.RustApi.Services
         /// <summary>
         /// Configure listener.
         /// </summary>
-        /// <param name="options"></param>
-        private void SetupListener(ApiServerOptions options)
+        private void SetupListener()
         {
-            var prefix = options.Endpoint;
+            var prefix = _options.Endpoint;
             if (!prefix.EndsWith("/")) prefix += "/";
 
             _listener.Prefixes.Add(prefix);
@@ -153,18 +152,32 @@ namespace Oxide.Ext.RustApi.Services
         {
             ThreadPool.QueueUserWorkItem((_) =>
             {
+                var response = context.Response;
+
+                // only post methods allowed
+                if (!context.Request.HttpMethod.Equals("post", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    response.StatusCode = 405; // method not allowed
+                    response.Close();
+                    return;
+                }
+
                 // try to find route handler
                 var route = FormatUrl(context.Request.Url.AbsolutePath);
-                if (!_routes.TryGetValue(route, out var routeHandler))
-                    throw new KeyNotFoundException($"Route not found: {route}");
-
-                // handle request
-                var response = context.Response;
 
                 // try to read request body
                 if (!TryToReadBody(context.Request, out var requestContent))
                 {
                     response.StatusCode = 500;
+                    response.Close();
+                    return;
+                }
+
+                // validate sign
+                var currentSign = context.Request.Headers[_options.SignHeaderName];
+                if (!IsValidSign(currentSign, route, requestContent))
+                {
+                    response.StatusCode = 403;
                     response.Close();
                     return;
                 }
@@ -305,6 +318,47 @@ namespace Oxide.Ext.RustApi.Services
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Test if sign is valid.
+        /// </summary>
+        /// <param name="currentSign">Current sign in request.</param>
+        /// <param name="route">Route url value.</param>
+        /// <param name="requestContent">Content data.</param>
+        /// <returns></returns>
+        private bool IsValidSign(string currentSign, string route, string requestContent)
+        {
+#if SKIP_SIGN_VALIDATION
+            return true;
+#endif
+
+            // validate args
+            if (string.IsNullOrEmpty(currentSign))
+            {
+                _logger.Warning("Current sign value can't be empty");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(route))
+            {
+                _logger.Warning("Route value can't be empty");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(_options.Secret))
+            {
+                _logger.Warning("Secret options can't be empty");
+                return false;
+            }
+
+            // build expected sign
+            var str = route + (requestContent?.Trim() ?? string.Empty) + _options.Secret;
+            var bytes = Encoding.UTF8.GetBytes(str);
+            var expectedSign = Convert.ToBase64String(bytes);
+
+            // compare signs
+            return currentSign.Equals(expectedSign, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
