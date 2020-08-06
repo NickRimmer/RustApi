@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Oxide.Ext.RustApi.Tools
+namespace Oxide.Ext.RustApi
 {
     /// <summary>
     /// Very small and simple DI container.
@@ -18,6 +18,7 @@ namespace Oxide.Ext.RustApi.Tools
         public MicroContainer()
         {
             _registrations = new Dictionary<Type, BuilderArgs>();
+            AddSingle(this);
         }
 
         /// <summary>

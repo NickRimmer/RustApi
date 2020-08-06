@@ -8,34 +8,34 @@ namespace Oxide.Ext.RustApi.Services
     public class UModLogger<T> : ILogger<T>
     {
         /// <inheritdoc />
-        public void Debug(string format, params object[] args)
+        public void Debug(string message)
         {
-            Interface.uMod.LogDebug($"[{typeof(T).Name}] {format}", args);
+            Interface.uMod.LogDebug($"[{typeof(T).Name}] {message}");
         }
 
         /// <inheritdoc />
-        public void Error(string format, params object[] args)
+        public void Error(string message)
         {
-            Interface.uMod.LogError($"[{typeof(T).Name}] {format}", args);
+            Interface.uMod.LogError($"[{typeof(T).Name}] {message}");
         }
 
         /// <inheritdoc />
-        public void Error(Exception ex, string format = null, params object[] args)
+        public void Error(Exception ex, string message = null)
         {
-            var message = string.IsNullOrEmpty(format) ? ex.Message : string.Format(format, args);
-            Interface.uMod.LogException($"[{typeof(T).Name}] {message}", ex);
+            var finalMessage = string.IsNullOrEmpty(message) ? ex.Message : message;
+            Interface.uMod.LogException($"[{typeof(T).Name}] {finalMessage}", ex);
         }
 
         /// <inheritdoc />
-        public void Warning(string format, params object[] args)
+        public void Warning(string message)
         {
-            Interface.uMod.LogWarning($"[{typeof(T).Name}] {format}", args);
+            Interface.uMod.LogWarning($"[{typeof(T).Name}] {message}");
         }
 
         /// <inheritdoc />
-        public void Info(string format, params object[] args)
+        public void Info(string message)
         {
-            Interface.uMod.LogInfo($"[{typeof(T).Name}] {format}", args);
+            Interface.uMod.LogInfo($"[{typeof(T).Name}] {message}");
         }
     }
 }

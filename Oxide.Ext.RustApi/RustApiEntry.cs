@@ -2,6 +2,7 @@
 using Oxide.Core;
 using Oxide.Core.Extensions;
 using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models.Options;
 using Oxide.Ext.RustApi.Services;
 using Oxide.Ext.RustApi.Tools;
 
@@ -12,16 +13,13 @@ namespace Oxide.Ext.RustApi
     /// </summary>
     public class RustApiEntry : Extension
     {
-        private MicroContainer _services;
-        private ILogger<RustApiEntry> _logger;
+        private readonly MicroContainer _services;
+        private readonly ILogger<RustApiEntry> _logger;
 
         /// <inheritdoc />
         public RustApiEntry(ExtensionManager manager) : base(manager)
         {
-            _services = new MicroContainer()
-                .Add(typeof(ILogger<>), typeof(UModLogger<>))
-                .AddSingle<ApiServer>();
-
+            _services = BuildServices();
             _logger = _services.Get<ILogger<RustApiEntry>>();
         }
 
@@ -37,7 +35,7 @@ namespace Oxide.Ext.RustApi
         /// <inheritdoc />
         public override void OnModLoad()
         {
-            _services.Get<ApiServer>().StartAsync();
+            _services.Get<ApiServer>().Start();
             _logger.Info($"{Name} extension loaded");
         }
 
@@ -46,6 +44,20 @@ namespace Oxide.Ext.RustApi
         {
             _services.Get<ApiServer>()?.Dispose();
             _logger.Info($"{Name} extension unloaded");
+        }
+
+        /// <summary>
+        /// Build micro container with required services
+        /// </summary>
+        /// <returns></returns>
+        private static MicroContainer BuildServices()
+        {
+            var result = new MicroContainer()
+                .Add(typeof(ILogger<>), typeof(UModLogger<>))
+                .AddSingle(new ApiServerOptions { Endpoint = "http://localhost:6667" }) //TODO read from configuration
+                .AddSingle<ApiServer>();
+
+            return result;
         }
     }
 }

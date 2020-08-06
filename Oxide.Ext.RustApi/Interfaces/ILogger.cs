@@ -10,37 +10,32 @@ namespace Oxide.Ext.RustApi.Interfaces
         /// <summary>
         /// Log debug information.
         /// </summary>
-        /// <param name="format">Formatted message.</param>
-        /// <param name="args">Message arguments.</param>
-        void Debug(string format, params object[] args);
+        /// <param name="message">Formatted message.</param>
+        void Debug(string message);
 
         /// <summary>
         /// Log error information.
         /// </summary>
-        /// <param name="format">Formatted message.</param>
-        /// <param name="args">Message arguments.</param>
-        void Error(string format, params object[] args);
+        /// <param name="message">Formatted message.</param>
+        void Error(string message);
 
         /// <summary>
         /// Log exception.
         /// </summary>
         /// <param name="ex">Exception instance.</param>
-        /// <param name="format">Formatted message.</param>
-        /// <param name="args">Message arguments.</param>
-        void Error(Exception ex, string format = null, params object[] args);
+        /// <param name="message">Formatted message.</param>
+        void Error(Exception ex, string message = null);
 
         /// <summary>
         /// Log warning.
         /// </summary>
-        /// <param name="format">Formatted message.</param>
-        /// <param name="args">Message arguments.</param>
-        void Warning(string format, params object[] args);
+        /// <param name="message">Formatted message.</param>
+        void Warning(string message);
 
         /// <summary>
         /// Log information.
         /// </summary>
-        /// <param name="format">Formatted message.</param>
-        /// <param name="args">Message arguments.</param>
-        void Info(string format, params object[] args);
+        /// <param name="message">Formatted message.</param>
+        void Info(string message);
     }
 }
