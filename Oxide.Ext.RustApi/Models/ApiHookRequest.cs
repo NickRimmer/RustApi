@@ -6,9 +6,9 @@ namespace Oxide.Ext.RustApi.Models
     /// <summary>
     /// Request data for hook execution
     /// </summary>
-    public class HookRequestModel
+    public class ApiHookRequest
     {
-        public HookRequestModel(string hookName, Dictionary<string, object> parameters)
+        public ApiHookRequest(string hookName, Dictionary<string, object> parameters)
         {
             HookName = hookName ?? throw new ArgumentNullException(nameof(hookName));
             Parameters = parameters ?? new Dictionary<string, object>();

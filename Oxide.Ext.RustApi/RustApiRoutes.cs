@@ -16,7 +16,7 @@ namespace Oxide.Ext.RustApi
             var apiRoutes = container.Get<IApiRoutes>();
 
             apiRoutes
-                .AddRoute<HookRequestModel>("hook", OnCallHook);
+                .AddRoute<ApiHookRequest>("hook", OnCallHook);
 
             return container;
         }
@@ -41,13 +41,13 @@ namespace Oxide.Ext.RustApi
         /// On Hook execute API request.
         /// </summary>
         /// <param name="user">User info.</param>
-        /// <param name="hookInfo">Hook request information.</param>
-        private static object OnCallHook(ApiUserInfo user, HookRequestModel hookInfo)
+        /// <param name="apiHookInfo">Hook request information.</param>
+        private static object OnCallHook(ApiUserInfo user, ApiHookRequest apiHookInfo)
         {
             const string hooksAccessPermission = "hook";
             ValidateUserPermission(user, hooksAccessPermission);
 
-            var result = Interface.uMod.CallHook(hookInfo.HookName, hookInfo.Parameters);
+            var result = Interface.uMod.CallHook(apiHookInfo.HookName, apiHookInfo.Parameters);
             return result;
         }
     }

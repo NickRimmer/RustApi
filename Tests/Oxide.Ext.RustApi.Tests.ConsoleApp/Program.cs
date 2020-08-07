@@ -39,7 +39,7 @@ namespace Oxide.Ext.RustApi.Tests.ConsoleApp
             return data.Select(x => int.Parse(x)).ToList();
         }
 
-        private static void onCallHook(HookRequestModel hookInfo)
+        private static void onCallHook(ApiHookRequest apiHookInfo)
         {
 
         }
