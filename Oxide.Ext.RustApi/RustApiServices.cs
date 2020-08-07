@@ -5,6 +5,7 @@ using Oxide.Ext.RustApi.Models.Options;
 using Oxide.Ext.RustApi.Services;
 using System.Collections.Generic;
 using System.IO;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi
 {
@@ -44,8 +45,8 @@ namespace Oxide.Ext.RustApi
             else
             {
                 // set and store default
-                var firstUser = new UserOptions("admin", "secret", new List<string> { "admin" });
-                options = new RustApiOptions(DefaultEndpoint, new List<UserOptions> { firstUser });
+                var firstUser = new ApiUserInfo("admin", "secret", new List<string> { "admin" });
+                options = new RustApiOptions(DefaultEndpoint, new List<ApiUserInfo> { firstUser });
 
                 var str = JsonConvert.SerializeObject(options, Formatting.Indented);
                 File.WriteAllText(path, str);

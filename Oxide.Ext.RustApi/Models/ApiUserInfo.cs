@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Oxide.Ext.RustApi.Models.Options
+namespace Oxide.Ext.RustApi.Models
 {
     /// <summary>
     /// User access configuration.
     /// </summary>
-    public class UserOptions
+    public class ApiUserInfo
     {
-        public UserOptions(string name, string secret, List<string> permissions)
+        public ApiUserInfo(string name, string secret, List<string> permissions)
         {
             if (string.IsNullOrEmpty(secret)) throw new ArgumentNullException(nameof(secret));
 

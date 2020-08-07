@@ -3,6 +3,7 @@ using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.Linq;
 using System.Text;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -19,7 +20,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <inheritdoc />
-        public bool TryToGetUser(string user, string sign, string route, string requestContent, out UserOptions userInfo)
+        public bool TryToGetUser(string user, string sign, string route, string requestContent, out ApiUserInfo userInfo)
         {
             if (!TryGetUser(user, out userInfo))
             {
@@ -57,7 +58,7 @@ namespace Oxide.Ext.RustApi.Services
         /// <param name="user">User name.</param>
         /// <param name="userInfo">Found user info.</param>
         /// <returns></returns>
-        private bool TryGetUser(string user, out UserOptions userInfo)
+        private bool TryGetUser(string user, out ApiUserInfo userInfo)
         {
             userInfo = default;
 
@@ -75,7 +76,7 @@ namespace Oxide.Ext.RustApi.Services
         /// <param name="requestContent">Request content.</param>
         /// <param name="userInfo">Current user info.</param>
         /// <returns></returns>
-        private static string BuildSign(string route, string requestContent, UserOptions userInfo)
+        private static string BuildSign(string route, string requestContent, ApiUserInfo userInfo)
         {
             // build expected sign
             var str = route + (requestContent?.Trim() ?? string.Empty) + userInfo.Secret;

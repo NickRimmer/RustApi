@@ -6,12 +6,12 @@ namespace Oxide.Ext.RustApi.Models.Options
     /// <summary>
     /// Api server options.
     /// </summary>
-    public class RustApiOptions
+    internal class RustApiOptions
     {
-        public RustApiOptions(string endpoint, List<UserOptions> users = null)
+        public RustApiOptions(string endpoint, List<ApiUserInfo> users = null)
         {
             Endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
-            Users = users ?? new List<UserOptions>();
+            Users = users ?? new List<ApiUserInfo>();
         }
 
         /// <summary>
@@ -22,6 +22,6 @@ namespace Oxide.Ext.RustApi.Models.Options
         /// <summary>
         /// List of users
         /// </summary>
-        public List<UserOptions> Users { get; }
+        public List<ApiUserInfo> Users { get; }
     }
 }

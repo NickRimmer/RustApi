@@ -3,7 +3,7 @@
     /// <summary>
     /// Simple API server.
     /// </summary>
-    public interface IApiServer
+    internal interface IApiServer
     {
         /// <summary>
         /// Start server listener.

@@ -3,7 +3,7 @@ using System;
 
 namespace Oxide.Ext.RustApi.Tests.ConsoleApp
 {
-    public class ConsoleLogger<T> : ILogger<T>
+    internal class ConsoleLogger<T> : ILogger<T>
     {
         /// <inheritdoc />
         public void Debug(string message)

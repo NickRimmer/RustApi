@@ -3,6 +3,7 @@ using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.Collections.Generic;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -17,7 +18,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute<T>(string route, Func<UserOptions, T, object> callback) where T : class
+        public IApiRoutes AddRoute<T>(string route, Func<ApiUserInfo, T, object> callback) where T : class
         {
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
@@ -35,7 +36,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute(string route, Func<UserOptions, object> callback)
+        public IApiRoutes AddRoute(string route, Func<ApiUserInfo, object> callback)
         {
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
@@ -45,7 +46,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute(string route, Action<UserOptions> callback)
+        public IApiRoutes AddRoute(string route, Action<ApiUserInfo> callback)
         {
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
@@ -60,7 +61,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute<T>(string route, Action<UserOptions, T> callback)
+        public IApiRoutes AddRoute<T>(string route, Action<ApiUserInfo, T> callback)
         {
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Oxide.Core;
 
 [assembly: InternalsVisibleTo("Oxide.Ext.RustApi.Tests.Unit")]
+[assembly: InternalsVisibleTo("Oxide.Ext.RustApi.Tests.ConsoleApp")]
 
 namespace Oxide.Ext.RustApi
 {

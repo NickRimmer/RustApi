@@ -26,7 +26,7 @@ namespace Oxide.Ext.RustApi
         /// </summary>
         /// <param name="user">User info.</param>
         /// <param name="requiredPermission">Required permission.</param>
-        private static void ValidateUserPermission(UserOptions user, string requiredPermission)
+        private static void ValidateUserPermission(ApiUserInfo user, string requiredPermission)
         {
             // admin permission to allow everything
             const string adminAccessPermission = "admin";
@@ -42,7 +42,7 @@ namespace Oxide.Ext.RustApi
         /// </summary>
         /// <param name="user">User info.</param>
         /// <param name="hookInfo">Hook request information.</param>
-        private static object OnCallHook(UserOptions user, HookRequestModel hookInfo)
+        private static object OnCallHook(ApiUserInfo user, HookRequestModel hookInfo)
         {
             const string hooksAccessPermission = "hook";
             ValidateUserPermission(user, hooksAccessPermission);

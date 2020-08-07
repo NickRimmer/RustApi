@@ -7,6 +7,7 @@ using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -198,7 +199,7 @@ namespace Oxide.Ext.RustApi.Services
         /// <param name="statusCode">Result http status code.</param>
         /// <param name="responseContent">Response body.</param>
         /// <returns></returns>
-        private bool TryToExecuteHandler(UserOptions userInfo, string route, string requestContent, out int statusCode, out object responseContent)
+        private bool TryToExecuteHandler(ApiUserInfo userInfo, string route, string requestContent, out int statusCode, out object responseContent)
         {
             responseContent = default;
             statusCode = 200;

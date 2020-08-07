@@ -1,12 +1,13 @@
 ﻿using Oxide.Ext.RustApi.Models.Options;
 using System;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Interfaces
 {
     /// <summary>
     /// Api server routes collection
     /// </summary>
-    public interface IApiRoutes
+    internal interface IApiRoutes
     {
         /// <summary>
         /// Add route with expected response data model.
@@ -15,7 +16,7 @@ namespace Oxide.Ext.RustApi.Interfaces
         /// <param name="route">Absolute url.</param>
         /// <param name="callback">Callback function.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute<T>(string route, Func<UserOptions, T, object> callback) where T : class;
+        IApiRoutes AddRoute<T>(string route, Func<ApiUserInfo, T, object> callback) where T : class;
 
         /// <summary>
         /// Add simple route.
@@ -23,7 +24,7 @@ namespace Oxide.Ext.RustApi.Interfaces
         /// <param name="route">Absolute url.</param>
         /// <param name="callback">Callback function.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, Func<UserOptions, object> callback);
+        IApiRoutes AddRoute(string route, Func<ApiUserInfo, object> callback);
 
         /// <summary>
         /// Add simple route without response and request data.
@@ -31,7 +32,7 @@ namespace Oxide.Ext.RustApi.Interfaces
         /// <param name="route">Absolute url.</param>
         /// <param name="callback">Callback function.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, Action<UserOptions> callback);
+        IApiRoutes AddRoute(string route, Action<ApiUserInfo> callback);
 
         /// <summary>
         /// Add simple route without response data.
@@ -39,7 +40,7 @@ namespace Oxide.Ext.RustApi.Interfaces
         /// <param name="route">Absolute url.</param>
         /// <param name="callback">Callback function.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute<T>(string route, Action<UserOptions, T> callback);
+        IApiRoutes AddRoute<T>(string route, Action<ApiUserInfo, T> callback);
 
         /// <summary>
         /// Try to get handler for route
@@ -56,5 +57,5 @@ namespace Oxide.Ext.RustApi.Interfaces
     /// <param name="userInfo">User information</param>
     /// <param name="content">Request content</param>
     /// <returns></returns>
-    public delegate object RouteHandlerArgs(UserOptions userInfo, string content);
+    public delegate object RouteHandlerArgs(ApiUserInfo userInfo, string content);
 }
