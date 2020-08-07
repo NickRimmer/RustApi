@@ -6,7 +6,7 @@ using Oxide.Ext.RustApi.Tools;
 namespace Oxide.Ext.RustApi
 {
     /// <summary>
-    /// Base RustApi class
+    /// Base RustApi class.
     /// </summary>
     public abstract class RustApiBase : Extension
     {
