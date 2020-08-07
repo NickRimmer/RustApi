@@ -10,4 +10,4 @@ You can use any external services more safety, cause now they haven't full acces
 In development.
 
 # Do you have ideas?
-Let write them in issues, and think together (;
+Let's write them in issues, and we will think about it together (;
