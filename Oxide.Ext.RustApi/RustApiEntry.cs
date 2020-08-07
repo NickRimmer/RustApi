@@ -1,10 +1,7 @@
 ﻿using Oxide.Core;
 using Oxide.Core.Extensions;
 using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models;
-using Oxide.Ext.RustApi.Models.Options;
 using Oxide.Ext.RustApi.Services;
-using Oxide.Ext.RustApi.Tools;
 using System.Reflection;
 
 namespace Oxide.Ext.RustApi
@@ -22,7 +19,12 @@ namespace Oxide.Ext.RustApi
         {
             if (manager == null) return;
 
-            _services = BuildServices();
+            _services = new MicroContainer();
+
+            _services
+                .AddRustApiServices()
+                .AddRustApiRoutes();
+
             _logger = _services.Get<ILogger<RustApiEntry>>();
         }
 
@@ -38,48 +40,15 @@ namespace Oxide.Ext.RustApi
         /// <inheritdoc />
         public override void OnModLoad()
         {
-            _services.Get<ApiServer>().Start();
+            _services.Get<IApiServer>().Start();
             _logger.Info($"{Name} extension loaded");
         }
 
         /// <inheritdoc />
         public override void OnShutdown()
         {
-            _services.Get<ApiServer>()?.Dispose();
+            _services.Get<IApiServer>()?.Destroy();
             _logger.Info($"{Name} extension unloaded");
-        }
-
-        /// <summary>
-        /// Build micro container with required services
-        /// </summary>
-        /// <returns></returns>
-        private MicroContainer BuildServices()
-        {
-            var result = new MicroContainer()
-                .Add(typeof(ILogger<>), typeof(UModLogger<>))
-                .AddSingle(new ApiServerOptions { Endpoint = "http://localhost:6667" }) //TODO read from configuration
-                .AddSingle<ApiServer>();
-
-            var apiServer = result.Get<ApiServer>();
-            ConfigureRoutes(apiServer);
-
-            return result;
-        }
-
-        private void ConfigureRoutes(ApiServer apiServer)
-        {
-            apiServer
-                .AddRoute<HookRequestModel>("hook", OnCallHook);
-        }
-
-        /// <summary>
-        /// On Hook execute API request
-        /// </summary>
-        /// <param name="hookInfo"></param>
-        private object OnCallHook(HookRequestModel hookInfo)
-        {
-            var result = Interface.uMod.CallHook(hookInfo.HookName, hookInfo.Parameters);
-            return result;
         }
     }
 }

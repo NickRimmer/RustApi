@@ -13,6 +13,7 @@ namespace Oxide.Ext.RustApi.Tests.ConsoleApp
     {
         private static async Task Main(string[] args)
         {
+            /*
             var container = new MicroContainer()
                 .Add(typeof(ILogger<>), typeof(ConsoleLogger<>))
                 .AddSingle(new ApiServerOptions
@@ -29,6 +30,7 @@ namespace Oxide.Ext.RustApi.Tests.ConsoleApp
                 .Start();
 
             while (true) await Task.Delay(TimeSpan.FromSeconds(1));
+            */
         }
 
         private static List<int> OnTest1(List<string> data)
