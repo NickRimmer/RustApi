@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
 		LICENSE.md = LICENSE.md
 		nuget.config = nuget.config
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Oxide.Ext.RustApi.Tests.ConsoleApp", "Tests\Oxide.Ext.RustApi.Tests.ConsoleApp\Oxide.Ext.RustApi.Tests.ConsoleApp.csproj", "{502F72DB-0151-402E-B5D9-35E0CD991A54}"
