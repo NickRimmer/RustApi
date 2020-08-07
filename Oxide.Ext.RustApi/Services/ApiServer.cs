@@ -71,7 +71,7 @@ namespace Oxide.Ext.RustApi.Services
         }
 
         /// <summary>
-        /// Add simple route.
+        /// Add simple route withour response and request data.
         /// </summary>
         /// <param name="route">Absolute url.</param>
         /// <param name="callback">Callback function.</param>
@@ -87,7 +87,30 @@ namespace Oxide.Ext.RustApi.Services
                 return default;
             });
 
-            _logger.Info($"Api route: {url}");
+            return this;
+        }
+
+        /// <summary>
+        /// Add simple route without response data.
+        /// </summary>
+        /// <param name="route">Absolute url.</param>
+        /// <param name="callback">Callback function.</param>
+        /// <returns></returns>
+        public ApiServer AddRoute<T>(string route, Action<T> callback)
+        {
+            var url = FormatUrl(route);
+            if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
+
+            _routes.Add(url, (response) =>
+            {
+                T data = string.IsNullOrEmpty(response)
+                    ? default
+                    : JsonConvert.DeserializeObject<T>(response);
+
+                callback.Invoke(data);
+                return default;
+            });
+
             return this;
         }
 

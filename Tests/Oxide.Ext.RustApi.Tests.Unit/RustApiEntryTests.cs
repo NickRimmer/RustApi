@@ -9,7 +9,7 @@ namespace Oxide.Ext.RustApi.Tests.Unit
         public void ExtInfoTest_Default_Expected()
         {
             // arrange
-            var instance = new RustApiTemp();
+            var instance = new RustApiEntry(null);
 
             // act
             var name = instance.Name;
@@ -20,14 +20,6 @@ namespace Oxide.Ext.RustApi.Tests.Unit
             Assert.Equal("RustApi", name);
             Assert.Equal("Nick Rimmer", author);
             Assert.NotEqual(default, version);
-        }
-
-        private class RustApiTemp : RustApiBase
-        {
-            /// <inheritdoc />
-            public RustApiTemp() : base(null)
-            {
-            }
         }
     }
 }
