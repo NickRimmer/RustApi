@@ -1,5 +1,8 @@
 ﻿namespace Oxide.Ext.RustApi.Models.Options
 {
+    /// <summary>
+    /// Api server options.
+    /// </summary>
     public class ApiServerOptions
     {
         private const string DefaultSignHeaderName = "s";
@@ -15,7 +18,7 @@
         public string Secret { get; set; }
 
         /// <summary>
-        /// Header name to pass sign
+        /// Header name to pass sign.
         /// </summary>
         public string SignHeaderName { get; set; } = DefaultSignHeaderName;
     }
