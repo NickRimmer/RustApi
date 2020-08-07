@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Oxide.Core;
 
-namespace Oxide.Ext.RustApi.Tools
+[assembly: InternalsVisibleTo("Oxide.Ext.RustApi.Tests.Unit")]
+
+namespace Oxide.Ext.RustApi
 {
     internal static class AssemblyInfo
     {

@@ -5,7 +5,7 @@ using System;
 namespace Oxide.Ext.RustApi.Services
 {
     /// <inheritdoc />
-    public class UModLogger<T> : ILogger<T>
+    internal class UModLogger<T> : ILogger<T>
     {
         /// <inheritdoc />
         public void Debug(string message)

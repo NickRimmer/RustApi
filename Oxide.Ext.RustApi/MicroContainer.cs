@@ -7,7 +7,7 @@ namespace Oxide.Ext.RustApi
     /// <summary>
     /// Very small and simple DI container.
     /// </summary>
-    public class MicroContainer
+    internal class MicroContainer
     {
         private delegate object BuilderArgs(Type requestType);
         private readonly Dictionary<Type, BuilderArgs> _registrations;
