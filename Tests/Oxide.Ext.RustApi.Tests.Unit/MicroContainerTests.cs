@@ -177,7 +177,7 @@ namespace Oxide.Ext.RustApi.Tests.Unit
             container.Add<TestDepService>();
 
             var ex = Assert.Throws<KeyNotFoundException>(() => container.Get<TestDepService>());
-            Assert.Equal(typeof(ITestService).FullName, ex.Message);
+            Assert.Contains(typeof(ITestService).FullName, ex.Message);
         }
 
         #region Test service interface and implementations
