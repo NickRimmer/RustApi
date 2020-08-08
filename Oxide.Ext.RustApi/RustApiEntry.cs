@@ -44,15 +44,15 @@ namespace Oxide.Ext.RustApi
             _services.Get<IApiServer>().Start();
 
             // update command methods cache
-            Interface.uMod.RootPluginManager.OnPluginAdded += UpdateCommandRouteCache;
-            Interface.uMod.RootPluginManager.OnPluginRemoved += UpdateCommandRouteCache;
+            Interface.uMod.RootPluginManager.OnPluginAdded += OnPluginsUpdate;
+            Interface.uMod.RootPluginManager.OnPluginRemoved += OnPluginsUpdate;
 
             _logger.Info($"{Name} extension loaded");
         }
 
-        private void UpdateCommandRouteCache(Plugin plugin)
+        private void OnPluginsUpdate(Plugin plugin)
         {
-            _logger.Info("[CASH] update required");
+            _services.Get<ICommandRoute>().UpdateApiPluginsCache();
         }
 
         /// <inheritdoc />
