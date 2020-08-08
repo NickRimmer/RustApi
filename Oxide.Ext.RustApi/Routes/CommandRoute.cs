@@ -11,33 +11,27 @@ using System.Reflection;
 
 namespace Oxide.Ext.RustApi.Routes
 {
-    /// <summary>
-    /// Commands route handler.
-    /// </summary>
-    internal class CommandRoute
+    /// <inheritdoc />
+    internal class CommandRoute : ICommandRoute
     {
         private readonly ILogger<CommandRoute> _logger;
+        private IReadOnlyList<ApiPlugin> _apiPlugins;
 
         public CommandRoute(ILogger<CommandRoute> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _apiPlugins = new ApiPlugin[0];
         }
 
-        /// <summary>
-        /// On command api call.
-        /// </summary>
-        /// <param name="user">Current user.</param>
-        /// <param name="request">Current request.</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public IReadOnlyList<object> OnCallCommand(ApiUserInfo user, ApiCommandRequest request)
         {
             var result = new List<object>();
-            var apiPlugins = GetApiPlugins(); //TODO can be cached, but should be updated on plugins reload
 
             // let's inform client in case if there is no any commands
-            if (!apiPlugins.Any()) throw new ApiCommandNotFoundException($"No methods found for the command '{request.CommandName}'");
+            if (!_apiPlugins.Any()) throw new ApiCommandNotFoundException($"No methods found for the command '{request.CommandName}'");
 
-            foreach (var apiPlugin in apiPlugins)
+            foreach (var apiPlugin in _apiPlugins)
             {
                 // let's try to find target methods with same command name
                 var apiCommands = apiPlugin.Methods
@@ -60,6 +54,14 @@ namespace Oxide.Ext.RustApi.Routes
             }
 
             return result;
+        }
+
+        /// <inheritdoc />
+        public void UpdateApiPluginsCache()
+        {
+            _apiPlugins = GetApiPlugins();
+            var methodsFound = _apiPlugins.Sum(x => x.Methods.Count);
+            _logger.Info($"Api methods list updated: {methodsFound}");
         }
 
         /// <summary>

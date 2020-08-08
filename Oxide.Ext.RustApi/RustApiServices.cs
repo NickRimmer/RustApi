@@ -28,7 +28,7 @@ namespace Oxide.Ext.RustApi
                 .AddSingle<IAuthenticationService, AuthenticationService>()
 
                 .AddSingle<IApiRoutes, ApiRoutes>()
-                .AddSingle<CommandRoute>();
+                .AddSingle<ICommandRoute, CommandRoute>();
 
             return container;
         }

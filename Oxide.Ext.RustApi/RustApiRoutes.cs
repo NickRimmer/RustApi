@@ -20,7 +20,7 @@ namespace Oxide.Ext.RustApi
 
             apiRoutes
                 .AddRoute<ApiHookRequest>("hook", HookRoute.OnCallHook)
-                .AddRoute<ApiCommandRequest>("command", (user, request) => container.Get<CommandRoute>().OnCallCommand(user, request));
+                .AddRoute<ApiCommandRequest>("command", (user, request) => container.Get<ICommandRoute>().OnCallCommand(user, request));
 
             return container;
         }
