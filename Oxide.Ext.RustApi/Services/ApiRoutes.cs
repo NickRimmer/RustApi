@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.Collections.Generic;
 using Oxide.Ext.RustApi.Models;

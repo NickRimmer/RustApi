@@ -2,7 +2,6 @@
 using Oxide.Ext.RustApi.Exceptions;
 using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Models;
-using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.IO;
 using System.Net;
