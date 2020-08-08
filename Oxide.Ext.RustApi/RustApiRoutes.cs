@@ -1,11 +1,14 @@
 ﻿using Oxide.Core;
+using Oxide.Ext.RustApi.Attributes;
 using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Models;
-using Oxide.Ext.RustApi.Models.Options;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security;
+using Oxide.Ext.RustApi.Routes;
 
 namespace Oxide.Ext.RustApi
 {
@@ -16,7 +19,8 @@ namespace Oxide.Ext.RustApi
             var apiRoutes = container.Get<IApiRoutes>();
 
             apiRoutes
-                .AddRoute<ApiHookRequest>("hook", OnCallHook);
+                .AddRoute<ApiHookRequest>("hook", HookRoute.OnCallHook)
+                .AddRoute<ApiCommandRequest>("command", (user, request) => container.Get<CommandRoute>().OnCallCommand(user, request));
 
             return container;
         }
@@ -25,29 +29,19 @@ namespace Oxide.Ext.RustApi
         /// Validate user permissions.
         /// </summary>
         /// <param name="user">User info.</param>
-        /// <param name="requiredPermission">Required permission.</param>
-        private static void ValidateUserPermission(ApiUserInfo user, string requiredPermission)
+        /// <param name="requiredPermissions">Required permission.</param>
+        public static bool IsUserHasAccess(ApiUserInfo user, params string[] requiredPermissions)
         {
+            // if no permissions configured, any authorized user has access
+            if (!requiredPermissions.Any()) return true;
+
             // admin permission to allow everything
             const string adminAccessPermission = "admin";
-            if (user.Permissions.Any(x => x.Equals(adminAccessPermission, StringComparison.InvariantCultureIgnoreCase))) return;
+            if (user.Permissions.Any(x => x.Equals(adminAccessPermission, StringComparison.InvariantCultureIgnoreCase))) 
+                return true;
 
             // try to find required permissions
-            if (!user.Permissions.Any(x => x.Equals(requiredPermission, StringComparison.InvariantCultureIgnoreCase)))
-                throw new SecurityException($"User '{user}' hasn't required permission '{requiredPermission}'");
-        }
-
-        /// <summary>
-        /// On Hook execute API request.
-        /// </summary>
-        /// <param name="user">User info.</param>
-        /// <param name="apiHookInfo">Hook request information.</param>
-        private static object OnCallHook(ApiUserInfo user, ApiHookRequest apiHookInfo)
-        {
-            const string hooksAccessPermission = "hook";
-            ValidateUserPermission(user, hooksAccessPermission);
-
-            var result = Interface.uMod.CallHook(apiHookInfo.HookName, apiHookInfo.Parameters);
+            var result = user.Permissions.Intersect(requiredPermissions, StringComparer.InvariantCultureIgnoreCase).Any();
             return result;
         }
     }

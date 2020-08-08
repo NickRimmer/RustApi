@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
+using Oxide.Ext.RustApi.Exceptions;
 using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models;
 using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Threading;
-using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -207,7 +209,7 @@ namespace Oxide.Ext.RustApi.Services
             if (!_apiRoutes.TryGetHandler(route, out var routeHandler))
             {
                 _logger.Error($"Route not found: {route}");
-                statusCode = 400;
+                statusCode = 404;
 
                 return false;
             }
@@ -218,14 +220,19 @@ namespace Oxide.Ext.RustApi.Services
             }
             catch (Exception ex)
             {
-                if (ex is SecurityException)
+                if (ex is ApiCommandNotFoundException)
                 {
-                    _logger.Error(ex, $"User '{userInfo.Name}' access error");
+                    _logger.Warning(ex.Message);
+                    statusCode = 404;
+                }
+                else if (ex is SecurityException)
+                {
+                    _logger.Warning($"User '{userInfo.Name}' access error");
                     statusCode = 403;
                 }
-                else if (ex is ArgumentException)
+                else if (ex is ArgumentException || ex is TargetInvocationException)
                 {
-                    _logger.Error(ex, $"Route handler ({route}) throw exception cause wrong arguments");
+                    _logger.Warning($"Route handler ({route}) throw exception cause wrong arguments");
                     statusCode = 400;
                 }
                 else if (ex is JsonReaderException || ex is JsonSerializationException)
@@ -236,7 +243,7 @@ namespace Oxide.Ext.RustApi.Services
                 }
                 else
                 {
-                    _logger.Error(ex, $"Route handler ({route}) throw exception");
+                    _logger.Error(ex, $"Route handler ({route}) throw exception ({ex.GetType().Name})");
                     statusCode = 500;
                 }
 

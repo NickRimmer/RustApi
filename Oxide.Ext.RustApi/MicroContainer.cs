@@ -135,11 +135,11 @@ namespace Oxide.Ext.RustApi
             if (!_registrations.TryGetValue(requestType, out var builder))
             {
                 // only if type with generic we can try to find by definition
-                if (!requestType.IsGenericType) throw new KeyNotFoundException(requestType.FullName);
+                if (!requestType.IsGenericType) throw new KeyNotFoundException($"Container service not found: {requestType.FullName}");
 
                 // try to find by definition
                 if (!_registrations.TryGetValue(requestType.GetGenericTypeDefinition(), out builder))
-                    throw new KeyNotFoundException(requestType.FullName);
+                    throw new KeyNotFoundException($"Container service not found: {requestType.FullName}");
             }
 
             return builder.Invoke(requestType);

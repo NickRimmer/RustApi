@@ -3,6 +3,7 @@ using Oxide.Core.Extensions;
 using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Services;
 using System.Reflection;
+using Oxide.Core.Plugins;
 
 namespace Oxide.Ext.RustApi
 {
@@ -41,7 +42,17 @@ namespace Oxide.Ext.RustApi
         public override void OnModLoad()
         {
             _services.Get<IApiServer>().Start();
+
+            // update command methods cache
+            Interface.uMod.RootPluginManager.OnPluginAdded += UpdateCommandRouteCache;
+            Interface.uMod.RootPluginManager.OnPluginRemoved += UpdateCommandRouteCache;
+
             _logger.Info($"{Name} extension loaded");
+        }
+
+        private void UpdateCommandRouteCache(Plugin plugin)
+        {
+            _logger.Info("[CASH] update required");
         }
 
         /// <inheritdoc />
