@@ -11,12 +11,14 @@ namespace Oxide.Ext.RustApi.Models
         public RustApiOptions(
             string endpoint, 
             List<ApiUserInfo> users = null,
-            bool logToFile = false
+            bool logToFile = false,
+            bool skipAuthentication = false
         )
         {
             Endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
             LogToFile = logToFile;
             Users = users ?? new List<ApiUserInfo>();
+            SkipAuthentication = skipAuthentication;
         }
 
         /// <summary>
@@ -33,5 +35,10 @@ namespace Oxide.Ext.RustApi.Models
         /// Enable logs storing into file
         /// </summary>
         public bool LogToFile { get; }
+
+        /// <summary>
+        /// Skip authentication validation
+        /// </summary>
+        public bool SkipAuthentication { get; }
     }
 }
