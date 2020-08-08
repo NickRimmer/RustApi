@@ -13,7 +13,7 @@ namespace Oxide.Ext.RustApi
     internal static class RustApiServices
     {
         private const string ConfigFileName = "rust-api.config.json";
-        private const string DefaultEndpoint = "http://localhost:28017";
+        private const string DefaultEndpoint = "http://*:28017";
 
         /// <summary>
         /// Build micro container with required services
