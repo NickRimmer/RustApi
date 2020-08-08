@@ -1,8 +1,8 @@
 ﻿using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models;
 using System;
 using System.Linq;
 using System.Text;
-using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -27,14 +27,13 @@ namespace Oxide.Ext.RustApi.Services
                 return false;
             }
 
-#if SKIP_SIGN_VALIDATION
-            return true;
-#endif
+            // skip token validation if configured to skip authentication
+            if (_options.SkipAuthentication) return true;
 
             // validate args
             if (string.IsNullOrEmpty(sign))
             {
-                _logger.Warning("Current sign value can't be empty");
+                _logger.Warning($"Current sign value can't be empty for user '{user}'");
                 return false;
             }
 
@@ -48,7 +47,10 @@ namespace Oxide.Ext.RustApi.Services
             var expectedSign = BuildSign(route, requestContent, userInfo);
 
             // compare signs
-            return sign.Equals(expectedSign, StringComparison.InvariantCultureIgnoreCase);
+            var result = sign.Equals(expectedSign, StringComparison.InvariantCultureIgnoreCase);
+            if(!result) _logger.Warning($"Incorrect sign for user '{user}'");
+
+            return result;
         }
 
         /// <summary>
