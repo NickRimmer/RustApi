@@ -66,9 +66,9 @@ Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Model
 - **hooks** - can run any hooks on server
 
 ## Call the Api commands
-You can specify your own permission names for users, like 'app-clans' and configure plugin methods with special attribute:
+You can specify your custom permission name, like 'app-clans' and configure plugin method for 'ClanPlayer' api command:
 ```c#
-[ApiCommand("ListOfClans", "app-clans")]
+[ApiCommand("ClanPlayers", "app-clans")]
 private void GetClanPlayers(ApiUserInfo user, ApiCommandRequest request)
 {
     Puts($"'{user.Name}' requested list of players in clan '{request.Parameters["ClanId"]}'")
@@ -78,7 +78,7 @@ private void GetClanPlayers(ApiUserInfo user, ApiCommandRequest request)
 Then you will need to send post request to `http://127.0.0.1:28017/command` (or what endpoint you configured in settings) with JSON in body:
 ```json
 {
-    "commandName": "ListOfClans",
+    "commandName": "ClanPlayers",
     "parameters": {
         "ClanId": "f5f75a8e-451f-4d7b-b65b-4feabdec0004"
     }
