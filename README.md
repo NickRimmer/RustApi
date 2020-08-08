@@ -18,7 +18,7 @@ After server have been started, you can find new configuration file here:
 `\server\oxide\rust-api.config.json`
 
 ## Api configuration
-Configuration file is serialized to JSON [RustApiOption object](Oxide.Ext.RustApi/Models/RustApiOptions.cs) (you can investigate it, there are summaries for all properties).
+Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Models/RustApiOptions.cs) and [ApiUserInfo](Oxide.Ext.RustApi/Models/ApiUserInfo.cs) objects (you can investigate it, there are summaries for all properties).
 ```json
 {
   "Endpoint": "http://*:28017",
