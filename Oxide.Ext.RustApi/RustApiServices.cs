@@ -2,7 +2,6 @@
 using Oxide.Core;
 using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Models;
-using Oxide.Ext.RustApi.Models.Options;
 using Oxide.Ext.RustApi.Routes;
 using Oxide.Ext.RustApi.Services;
 using System.Collections.Generic;

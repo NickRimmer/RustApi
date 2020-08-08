@@ -1,5 +1,4 @@
 ﻿using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models.Options;
 using System;
 using System.Linq;
 using System.Text;

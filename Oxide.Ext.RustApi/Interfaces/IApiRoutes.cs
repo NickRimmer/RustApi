@@ -1,5 +1,4 @@
-﻿using Oxide.Ext.RustApi.Models.Options;
-using System;
+﻿using System;
 using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Interfaces
