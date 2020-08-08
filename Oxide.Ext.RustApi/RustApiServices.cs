@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Oxide.Core;
 using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models;
 using Oxide.Ext.RustApi.Models.Options;
+using Oxide.Ext.RustApi.Routes;
 using Oxide.Ext.RustApi.Services;
 using System.Collections.Generic;
 using System.IO;
-using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi
 {
@@ -24,8 +25,10 @@ namespace Oxide.Ext.RustApi
                 .Add(typeof(ILogger<>), typeof(UModLogger<>))
                 .AddSingle(GetOptions()) //TODO read from configuration
                 .AddSingle<IApiServer, ApiServer>()
+                .AddSingle<IAuthenticationService, AuthenticationService>()
+
                 .AddSingle<IApiRoutes, ApiRoutes>()
-                .AddSingle<IAuthenticationService, AuthenticationService>();
+                .AddSingle<CommandRoute>();
 
             return container;
         }
@@ -51,13 +54,6 @@ namespace Oxide.Ext.RustApi
                 var str = JsonConvert.SerializeObject(options, Formatting.Indented);
                 File.WriteAllText(path, str);
             }
-
-            //var result = new RustApiOptions(
-            //    "http://localhost:6667",
-            //    new List<UserOptions>
-            //    {
-            //        new UserOptions("Admin", "secret", new List<string> {"admin"})
-            //    });
 
             return options;
         }
