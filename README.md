@@ -23,7 +23,7 @@ Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Model
 [Read more](Configuration.md) about configuration file.
 
 # Api commands
-You can add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods and call them via Api requests.
+You can add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods and call them via Api requests to `{RustApiOptions.Endpoint}/command`.
 
 [Read more](Commands.md) about api commands.
 

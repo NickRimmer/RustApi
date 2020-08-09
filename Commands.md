@@ -42,7 +42,11 @@ public void SomeMethod2 (ApiCommandAttribute attribute, ApiUserInfo user, ApiCom
 - `ApiCommandAttribute` - attribute configuration object
 - `ApiUserInfo` - user information
 
-## Api request body
+## Api request
+Use you configured endpoint in options, and send post requests to
+`{RustApiOptions.Endpoint}/command`.
+
+Request body example:
 ```json
 {
     "commandName": "test_arguments_3",
