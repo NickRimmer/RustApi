@@ -1,5 +1,5 @@
-﻿using Oxide.Ext.RustApi.Interfaces;
-using System;
+﻿using System;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
 
 namespace Oxide.Ext.RustApi.Tests.ConsoleApp
 {

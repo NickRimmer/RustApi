@@ -9,7 +9,7 @@ namespace Oxide.Ext.RustApi.Tests.Unit
         public void ExtInfoTest_Default_Expected()
         {
             // arrange
-            var instance = new RustApiEntry(null);
+            var instance = new RustApiExtension(null);
 
             // act
             var name = instance.Name;
