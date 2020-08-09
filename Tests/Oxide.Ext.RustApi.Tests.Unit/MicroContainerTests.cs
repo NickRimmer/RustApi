@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Oxide.Ext.RustApi.Business.Common;
+using System;
 using System.Collections.Generic;
 using Xunit;
 

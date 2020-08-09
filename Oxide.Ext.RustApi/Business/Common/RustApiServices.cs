@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Oxide.Core;
 using Oxide.Ext.RustApi.Business.Routes;
+using Oxide.Ext.RustApi.Business.Services;
+using Oxide.Ext.RustApi.Plugins;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Oxide.Ext.RustApi.Business.Common
 {
     internal static class RustApiServices
     {
-        private const string ConfigFileName = "rust-api.config.json";
+        internal const string ConfigFileName = "rust-api.config.json";
         private const string DefaultEndpoint = "http://*:28017";
 
         /// <summary>
@@ -24,7 +26,8 @@ namespace Oxide.Ext.RustApi.Business.Common
                 .AddSingle(GetOptions()) //TODO read from configuration
                 .AddSingle<IApiServer, ApiServer>()
                 .AddSingle<IAuthenticationService, SimpleAuthenticationService>()
-                .AddSingle<IApiRoutes, ApiRoutes>();
+                .AddSingle<IApiRoutes, ApiRoutes>()
+                .AddSingle<RustApiPlugin>();
 
             container
                 .AddHookRoutes()

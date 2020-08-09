@@ -15,7 +15,7 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        internal static T ReadAssemblyAttribute<T>() where T : Attribute => (T) typeof(RustApiEntry).Assembly.GetCustomAttribute(typeof(T));
+        internal static T ReadAssemblyAttribute<T>() where T : Attribute => (T) typeof(RustApiExtension).Assembly.GetCustomAttribute(typeof(T));
 
         /// <summary>
         /// Build extension version from assembly version
@@ -23,7 +23,7 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// <returns></returns>
         internal static VersionNumber ReadAssemblyVersion()
         {
-            var assemblyInfo = typeof(RustApiEntry).Assembly.GetName();
+            var assemblyInfo = typeof(RustApiExtension).Assembly.GetName();
             var version = assemblyInfo.Version;
 
             var result = new VersionNumber(version.Major, version.Minor, version.Build);

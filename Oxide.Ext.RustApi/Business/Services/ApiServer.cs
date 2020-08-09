@@ -69,9 +69,16 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <inheritdoc />
         public void Destroy()
         {
-            if (_listener?.IsListening == true) _listener.Stop();
-            ((IDisposable)_listener)?.Dispose();
-            _listener = null;
+            try
+            {
+                if (_listener?.IsListening == true) _listener.Stop();
+                ((IDisposable) _listener)?.Dispose();
+                _listener = null;
+            }
+            catch
+            {
+                // Hm... it's possible
+            }
         }
 
         /// <summary>
