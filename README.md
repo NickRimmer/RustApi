@@ -32,6 +32,11 @@ To identify user, for each request you should provide user name and secret strin
 - **ra_u** - header for user name (e.g. 'admin' or 'app-clans')
 - **ra_s** - header for secret value
 
+# Console commands
+- api.help - list of available console api commands
+- api.reload - Reload extenstion configuration from file: rust-api.config.json
+- api.users - List of registered users
+- api.version - Installed version of RustApi extension
 
 # Do you have ideas?
 Let's write them in issues, and we will think about it together (;
