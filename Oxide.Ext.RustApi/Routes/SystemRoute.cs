@@ -1,5 +1,4 @@
 ﻿using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Routes
 {
@@ -29,9 +28,11 @@ namespace Oxide.Ext.RustApi.Routes
         public void OnTestError() => _logger.Error("Error test log");
     }
 
-    internal static class SystemRouteExtension{
+    internal static class SystemRouteExtension
+    {
         public static MicroContainer AddSystemRoutes(this MicroContainer container)
         {
+            container.AddSingle<ICommandRoute, CommandRoute>();
             var apiRoutes = container.Get<IApiRoutes>();
 
             apiRoutes

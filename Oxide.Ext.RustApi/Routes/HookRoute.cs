@@ -1,25 +1,37 @@
-﻿using System.Security;
-using Oxide.Core;
+﻿using Oxide.Core;
+using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Models;
+using System.Security;
 
 namespace Oxide.Ext.RustApi.Routes
 {
-    internal static class HookRoute
+    /// <inheritdoc cref="IHookRoute"/>
+    internal class HookRoute : RouteBase, IHookRoute
     {
-        /// <summary>
-        /// On Hook execute API request.
-        /// </summary>
-        /// <param name="user">User info.</param>
-        /// <param name="apiHookInfo">Hook request information.</param>
-        public static object OnCallHook(ApiUserInfo user, ApiHookRequest apiHookInfo)
+
+        /// <inheritdoc cref="IHookRoute"/>
+        public object OnCallHook(ApiUserInfo user, ApiHookRequest apiHookInfo)
         {
             const string hooksAccessPermission = "hooks";
-            
-            if(!RustApiRoutes.IsUserHasAccess(user, hooksAccessPermission))
+
+            if (!IsUserHasAccess(user, hooksAccessPermission))
                 throw new SecurityException($"User '{user}' hasn't required permission '{hooksAccessPermission}'");
 
             var result = Interface.uMod.CallHook(apiHookInfo.HookName, apiHookInfo.Parameters);
             return result;
+        }
+    }
+
+    internal static class HookRouteExtension
+    {
+        public static MicroContainer AddHookRoutes(this MicroContainer container)
+        {
+            var apiRoutes = container.Get<IApiRoutes>();
+            apiRoutes.AddRoute<ApiHookRequest>(
+                "hook",
+                (user, request) => container.Get<IHookRoute>().OnCallHook(user, request));
+
+            return container;
         }
     }
 }

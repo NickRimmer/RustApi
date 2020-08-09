@@ -12,7 +12,7 @@ using System.Reflection;
 namespace Oxide.Ext.RustApi.Routes
 {
     /// <inheritdoc />
-    internal class CommandRoute : ICommandRoute
+    internal class CommandRoute : RouteBase, ICommandRoute
     {
         private readonly ILogger<CommandRoute> _logger;
         private IReadOnlyList<ApiPlugin> _apiPlugins;
@@ -40,7 +40,7 @@ namespace Oxide.Ext.RustApi.Routes
                     .Where(x => x.ApiInfo.CommandName.Equals(request.CommandName, StringComparison.InvariantCultureIgnoreCase))
 
                     // filter by required and user permissions
-                    .Where(x => RustApiRoutes.IsUserHasAccess(user, x.ApiInfo.RequiredPermissions));
+                    .Where(x => IsUserHasAccess(user, x.ApiInfo.RequiredPermissions));
 
                 // in case if command with requested name not found
                 if (!apiCommands.Any()) throw new ApiCommandNotFoundException($"Command '{request.CommandName}' not found for user '{user.Name}'");
@@ -177,6 +177,22 @@ namespace Oxide.Ext.RustApi.Routes
         {
             public MethodInfo Method { get; set; }
             public ApiCommandAttribute ApiInfo { get; set; }
+        }
+    }
+
+    internal static class CommandRouteExtension
+    {
+        public static MicroContainer AddCommandRoutes(this MicroContainer container)
+        {
+            container.AddSingle<ISystemRoute, SystemRoute>();
+            var apiRoutes = container.Get<IApiRoutes>();
+
+            apiRoutes.AddRoute<ApiCommandRequest>(
+                "command",
+                (user, request) => container.Get<ICommandRoute>().OnCallCommand(user, request)
+            );
+
+            return container;
         }
     }
 }
