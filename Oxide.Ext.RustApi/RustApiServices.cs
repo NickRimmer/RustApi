@@ -24,7 +24,7 @@ namespace Oxide.Ext.RustApi
                 .Add(typeof(ILogger<>), typeof(UModLogger<>))
                 .AddSingle(GetOptions()) //TODO read from configuration
                 .AddSingle<IApiServer, ApiServer>()
-                .AddSingle<IAuthenticationService, AuthenticationService>()
+                .AddSingle<IAuthenticationService, SimpleAuthenticationService>()
 
                 .AddSingle<IApiRoutes, ApiRoutes>()
                 .AddSingle<ICommandRoute, CommandRoute>();

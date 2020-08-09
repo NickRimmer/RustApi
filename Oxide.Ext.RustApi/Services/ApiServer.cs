@@ -15,9 +15,6 @@ namespace Oxide.Ext.RustApi.Services
     /// <inheritdoc />
     internal class ApiServer : IApiServer
     {
-        private const string UserHeaderName = "ra_u";
-        private const string SignHeaderName = "ra_s";
-
         private readonly RustApiOptions _options;
         private readonly ILogger<ApiServer> _logger;
         private readonly IAuthenticationService _authenticationService;
@@ -126,10 +123,8 @@ namespace Oxide.Ext.RustApi.Services
                     return;
                 }
 
-                // validate sign
-                var currentUser = context.Request.Headers[UserHeaderName];
-                var currentSign = context.Request.Headers[SignHeaderName];
-                if (!_authenticationService.TryToGetUser(currentUser, currentSign, route, requestContent, out var userInfo))
+                // validate user
+                if (!_authenticationService.TryToGetUser(context, out var userInfo))
                 {
                     response.StatusCode = 403;
                     response.Close();
