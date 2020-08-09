@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Product>RustApi</Product>
     <Company>Nick Rimmer</Company>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <Copyright>Nick Rimmer (DIPTEAM)</Copyright>
   </PropertyGroup>

@@ -2,9 +2,9 @@
 Rust game server extension to provide **JSON Web API**.
 It will made possible to grant access with permissions to particular plugins methods or to execute any hooks via web request.
 
-With this **Web API** anyone can create own external applications (web, mobile, etc.) and use server plugins as a backend or just retrieve any information from server. 
+With this **Web API** anyone can create own external applications (web, mobile, etc.) and use server plugins to retrieve/send any information from/to game server.
 
-You can use any external services more safety, cause now they haven't full access to server like with RCON connection.
+Why not use RCON? Cause it's easier to call and RustApi can provide limited access to server (RCON provide only full access).
 
 # Status
 Testing and improvement.
@@ -23,7 +23,6 @@ Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Model
 {
   "Endpoint": "http://*:28017",
   "LogToFile": false,
-  "SkipAuthentication": false,
   "Users": [
     {
       "Name": "admin",
@@ -53,7 +52,6 @@ Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Model
 
 - **Endpoint** - public url for Api listener
 - **LogToFile** - if set *true* then logs will be stored in folder `\server\oxide\logs\RustApi`
-- **SkipAuthentication** - will skip authentication for Api requests
 - **Users** - list of users, who can use your Api
 
 ## Api configuration: User
@@ -84,34 +82,11 @@ Then you will need to send post request to `http://127.0.0.1:28017/command` (or 
     }
 }
 ```
-Do not forget about authentication token in request header (in case if you didn't set `SkipAuthentication: true` in configuration)
 
 ## Authentication
-To protect your server from bad guys, for each request you should provide user name and unique token via request headers:
+To identify user, for each request you should provide user name and secret string via request headers:
 - **ra_u** - header for user name (e.g. 'admin' or 'app-clans')
-- **ra_s** - header for unique token value
-
-
-It is quite simple to build token, here is example on C#
-```C#
-/// <summary>
-/// Build token for request.
-/// </summary>
-/// <param name="route">Route name (e.g. 'command' or 'hook').</param>
-/// <param name="requestContent">Request content (JSON body value).</param>
-/// <param name="userSecret">User secret (specified in api configuration).</param>
-/// <returns></returns>
-private static string BuildToken(string route, string requestContent, string userSecret)
-{
-    var str = route + (requestContent?.Trim() ?? string.Empty) + userSecret;
-    var bytes = Encoding.UTF8.GetBytes(str);
-    var result = Convert.ToBase64String(bytes);
-
-    return result;
-}
-```
-
-During local development or tests you can disable authentication validation (set `SkipAuthentication` to `true`) and provide only user name in headers.
+- **ra_s** - header for secret value
 
 # Do you have ideas?
 Let's write them in issues, and we will think about it together (;
