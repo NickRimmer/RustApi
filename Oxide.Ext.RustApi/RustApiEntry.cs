@@ -1,9 +1,12 @@
-﻿using Oxide.Core;
+﻿using System;
+using System.Linq;
+using Oxide.Core;
 using Oxide.Core.Extensions;
 using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Services;
 using System.Reflection;
 using Oxide.Core.Plugins;
+using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi
 {
@@ -19,13 +22,8 @@ namespace Oxide.Ext.RustApi
         public RustApiEntry(ExtensionManager manager) : base(manager)
         {
             if (manager == null) return;
-
-            _services = new MicroContainer();
-
-            _services
-                .AddRustApiServices()
-                .AddRustApiRoutes();
-
+            
+            _services = new MicroContainer().AddRustApiServices();
             _logger = _services.Get<ILogger<RustApiEntry>>();
         }
 
