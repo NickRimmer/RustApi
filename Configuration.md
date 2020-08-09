@@ -5,7 +5,7 @@ Basic configuration file example:
 {
   "Endpoint": "http://*:28017",
   "LogToFile": false,
-  "LogLevel": "Error"
+  "LogLevel": "Error",
   "Users": [
     {
       "Name": "admin",
