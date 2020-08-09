@@ -1,8 +1,8 @@
 ﻿using Oxide.Core;
 using Oxide.Ext.RustApi.Interfaces;
+using Oxide.Ext.RustApi.Models;
 using System;
 using System.IO;
-using Oxide.Ext.RustApi.Models;
 
 namespace Oxide.Ext.RustApi.Services
 {
@@ -20,6 +20,8 @@ namespace Oxide.Ext.RustApi.Services
         /// <inheritdoc />
         public void Debug(string message)
         {
+            if ((byte)_options.LogLevel < 4) return;
+
             var text = $"[{typeof(T).Name}] {message}";
             Interface.uMod.LogDebug(text);
 
@@ -29,6 +31,8 @@ namespace Oxide.Ext.RustApi.Services
         /// <inheritdoc />
         public void Error(string message)
         {
+            if ((byte)_options.LogLevel < 1) return;
+
             var text = $"[{typeof(T).Name}] {message}";
             Interface.uMod.LogError(text);
 
@@ -38,6 +42,8 @@ namespace Oxide.Ext.RustApi.Services
         /// <inheritdoc />
         public void Error(Exception ex, string message = null)
         {
+            if ((byte)_options.LogLevel < 1) return;
+
             var finalMessage = string.IsNullOrEmpty(message) ? ex.Message : message;
             var text = $"[{typeof(T).Name}] {finalMessage}";
             Interface.uMod.LogException(text, ex);
@@ -48,6 +54,8 @@ namespace Oxide.Ext.RustApi.Services
         /// <inheritdoc />
         public void Warning(string message)
         {
+            if ((byte)_options.LogLevel < 2) return;
+
             var text = $"[{typeof(T).Name}] {message}";
             Interface.uMod.LogWarning(text);
 
@@ -57,6 +65,8 @@ namespace Oxide.Ext.RustApi.Services
         /// <inheritdoc />
         public void Info(string message)
         {
+            if ((byte)_options.LogLevel < 3) return;
+
             var text = $"[{typeof(T).Name}] {message}";
             Interface.uMod.LogInfo(text);
 
@@ -77,8 +87,8 @@ namespace Oxide.Ext.RustApi.Services
 
             var targetFileName = $"{LogName.ToLower()}_{now:yyyy-MM-dd}.txt";
             var targetPath = Path.Combine(path, Utility.CleanPath(targetFileName));
-            
-            using (var writer = new StreamWriter(targetPath, true)) 
+
+            using (var writer = new StreamWriter(targetPath, true))
                 writer.WriteLine($"{now:HH:mm:ss} {text}");
         }
     }
