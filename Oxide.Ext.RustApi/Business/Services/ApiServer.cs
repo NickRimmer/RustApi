@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -6,6 +7,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Exceptions;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;

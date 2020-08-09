@@ -5,8 +5,8 @@ namespace Oxide.Ext.RustApi.Primitives.Attributes
     /// <summary>
     /// ApiCommand attribute for Plugins.
     /// </summary>
-    [AttributeUsage(System.AttributeTargets.Method, AllowMultiple=false, Inherited=true)]
-    public class ApiCommandAttribute: Attribute
+    [AttributeUsage(System.AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+    public class ApiCommandAttribute : Attribute
     {
         /// <summary>
         /// Command name.
@@ -19,7 +19,7 @@ namespace Oxide.Ext.RustApi.Primitives.Attributes
         public string[] RequiredPermissions { get; }
 
         /// <summary>
-        /// ApiCommand attribute for plugin methods.
+        /// Api command attribute for plugin methods.
         /// </summary>
         /// <param name="commandName">Command name.</param>
         /// <param name="requiredPermissions">Required permissions.</param>
@@ -28,7 +28,7 @@ namespace Oxide.Ext.RustApi.Primitives.Attributes
             if (string.IsNullOrWhiteSpace(commandName)) throw new ArgumentException(nameof(commandName));
 
             CommandName = commandName;
-            RequiredPermissions = requiredPermissions ?? throw new ArgumentNullException(nameof(requiredPermissions));
+            RequiredPermissions = requiredPermissions;
         }
     }
 }

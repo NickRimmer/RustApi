@@ -12,9 +12,23 @@ namespace Oxide.Ext.RustApi.Primitives.Models
         {
             if (string.IsNullOrEmpty(secret)) throw new ArgumentNullException(nameof(secret));
 
-            Name = name ?? "Unnamed";
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             Secret = secret;
             Permissions = permissions ?? new List<string>();
+
+            IsAnonymous = false;
+        }
+
+        /// <summary>
+        /// Create anonymous info
+        /// </summary>
+        private ApiUserInfo()
+        {
+            Name = string.Empty;
+            Secret = string.Empty;
+            Permissions = new List<string>();
+
+            IsAnonymous = true;
         }
 
         /// <summary>
@@ -31,5 +45,15 @@ namespace Oxide.Ext.RustApi.Primitives.Models
         /// List of permissions
         /// </summary>
         public List<string> Permissions { get; }
+
+        /// <summary>
+        /// Anonymous flag
+        /// </summary>
+        public bool IsAnonymous { get; }
+
+        /// <summary>
+        /// Get anonymous user info
+        /// </summary>
+        public static ApiUserInfo Anonymous => new ApiUserInfo();
     }
 }

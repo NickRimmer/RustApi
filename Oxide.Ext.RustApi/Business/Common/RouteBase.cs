@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Oxide.Ext.RustApi.Primitives.Models;
+using System;
 using System.Linq;
-using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Business.Common
 {
@@ -9,6 +9,11 @@ namespace Oxide.Ext.RustApi.Business.Common
     /// </summary>
     internal abstract class RouteBase
     {
+        /// <summary>
+        /// System admin user permissions name
+        /// </summary>
+        public static string SystemAdminPermission = "admin";
+
         /// <summary>
         /// Validate user permissions.
         /// </summary>
@@ -19,9 +24,11 @@ namespace Oxide.Ext.RustApi.Business.Common
             // if no permissions configured, any authorized user has access
             if (!requiredPermissions.Any()) return true;
 
+            // if user is anonymous and there is required permissions, then deny access
+            if (user.IsAnonymous) return false;
+
             // admin permission to allow everything
-            const string adminAccessPermission = "admin";
-            if (user.Permissions.Any(x => x.Equals(adminAccessPermission, StringComparison.InvariantCultureIgnoreCase)))
+            if (user.Permissions.Any(x => x.Equals(SystemAdminPermission, StringComparison.InvariantCultureIgnoreCase)))
                 return true;
 
             // try to find required permissions
