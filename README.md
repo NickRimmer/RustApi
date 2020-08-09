@@ -17,51 +17,10 @@ Testing and improvement.
 After server have been started, you can find new configuration file here:
 `\server\oxide\rust-api.config.json`
 
-## Api configuration
+## Extension configuration
 Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Models/RustApiOptions.cs) and [ApiUserInfo](Oxide.Ext.RustApi/Models/ApiUserInfo.cs) objects (you can investigate it, there are summaries for all properties).
-```json
-{
-  "Endpoint": "http://*:28017",
-  "LogToFile": false,
-  "Users": [
-    {
-      "Name": "admin",
-      "Secret": "secret1",
-      "Permissions": [
-        "admin"
-      ]
-    },
-    {
-      "Name": "user1",
-      "Secret": "secret2",
-      "Permissions": [
-        "command1"
-      ]
-    },
-    {
-      "Name": "user2",
-      "Secret": "secret3",
-      "Permissions": [
-        "command1",
-	    "hooks"
-      ]
-    }
-  ]
-}
-```
 
-- **Endpoint** - public url for Api listener
-- **LogToFile** - if set *true* then logs will be stored in folder `\server\oxide\logs\RustApi`
-- **Users** - list of users, who can use your Api
-
-## Api configuration: User
-- **Name** - user title _(required)_
-- **Secret** - used to build authentication token _(required)_
-- **Permissions** - list of assigned permissions _(required)_
-
-## Predefined permissions
-- **admin** - grant full access to Api
-- **hooks** - can run any hooks on server
+[Read more](Configuration.md) about configuration file.
 
 ## Call the Api commands
 You can specify your custom permission name, like 'app-clans' and configure plugin method for 'ClanPlayer' api command:
