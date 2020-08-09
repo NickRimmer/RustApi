@@ -44,7 +44,11 @@ namespace Oxide.Ext.RustApi.Business.Routes
                     .Where(x => IsUserHasAccess(user, x.ApiInfo.RequiredPermissions));
 
                 // in case if command with requested name not found
-                if (!apiCommands.Any()) throw new ApiCommandNotFoundException($"Command '{request.CommandName}' not found for user '{user.Name}'");
+                if (!apiCommands.Any())
+                {
+                    var userName = user.IsAnonymous ? "Anonymous" : user.Name;
+                    throw new ApiCommandNotFoundException($"Command '{request.CommandName}' not found for user '{userName}'");
+                }
 
                 // execute api methods and build response
                 foreach (var apiMethod in apiCommands)

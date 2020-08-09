@@ -27,6 +27,14 @@ namespace Oxide.Ext.RustApi.Business.Services
             var user = context.Request.Headers[UserHeaderName];
             var secret = context.Request.Headers[SecretHeaderName];
 
+            // if user name wasn't sent
+            if (string.IsNullOrEmpty(user))
+            {
+                userInfo = ApiUserInfo.Anonymous;
+                return true;
+            }
+
+            // try to find user info
             if (!TryGetUser(user, out userInfo))
             {
                 _logger.Warning($"User '{user}' not found.");

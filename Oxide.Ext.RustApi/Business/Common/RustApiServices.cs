@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Oxide.Core;
 using Oxide.Ext.RustApi.Business.Routes;
 using Oxide.Ext.RustApi.Business.Services;
@@ -52,8 +53,10 @@ namespace Oxide.Ext.RustApi.Business.Common
             else
             {
                 // set and store default
-                var firstUser = new ApiUserInfo("admin", "secret", new List<string> { "admin" });
-                options = new RustApiOptions(DefaultEndpoint, new List<ApiUserInfo> { firstUser });
+                options = new RustApiOptions(DefaultEndpoint, new List<ApiUserInfo>
+                {
+                    new ApiUserInfo("admin", Guid.NewGuid().ToString(), new List<string> { "admin" }),
+                });
 
                 var str = JsonConvert.SerializeObject(options, Formatting.Indented);
                 File.WriteAllText(path, str);
