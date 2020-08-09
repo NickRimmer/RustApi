@@ -33,7 +33,7 @@ namespace Oxide.Ext.RustApi.Plugins
             RegisterConsoleCommand("api.help", Help);
             RegisterConsoleCommand("api.reload", ReloadCfg);
             RegisterConsoleCommand("api.users", Users);
-            RegisterConsoleCommand("api.version", Version);
+            RegisterConsoleCommand("api.version", GetVersion);
 
             // here can be any commands such user management, log level configuration, etc.
         }
@@ -92,6 +92,6 @@ namespace Oxide.Ext.RustApi.Plugins
         /// <summary>
         /// Print API extension version
         /// </summary>
-        private void Version() => Puts(_ext.Version.ToString());
+        private void GetVersion() => Puts(_ext.Version.ToString());
     }
 }
