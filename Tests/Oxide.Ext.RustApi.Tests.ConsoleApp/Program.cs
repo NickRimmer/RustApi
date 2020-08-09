@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Oxide.Ext.RustApi.Interfaces;
-using Oxide.Ext.RustApi.Models;
+using Oxide.Ext.RustApi.Primitives.Models;
 using Oxide.Ext.RustApi.Services;
 
 namespace Oxide.Ext.RustApi.Tests.ConsoleApp

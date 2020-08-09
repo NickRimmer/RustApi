@@ -2,11 +2,11 @@
 using System.Linq;
 using Oxide.Core;
 using Oxide.Core.Extensions;
-using Oxide.Ext.RustApi.Interfaces;
 using Oxide.Ext.RustApi.Services;
 using System.Reflection;
 using Oxide.Core.Plugins;
-using Oxide.Ext.RustApi.Models;
+using Oxide.Ext.RustApi.Business.Common;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
 
 namespace Oxide.Ext.RustApi
 {
