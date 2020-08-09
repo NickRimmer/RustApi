@@ -33,6 +33,7 @@ namespace Oxide.Ext.RustApi.Plugins
             RegisterConsoleCommand("api.help", Help);
             RegisterConsoleCommand("api.reload", ReloadCfg);
             RegisterConsoleCommand("api.users", Users);
+            RegisterConsoleCommand("api.version", Version);
 
             // here can be any commands such user management, log level configuration, etc.
         }
@@ -49,6 +50,7 @@ namespace Oxide.Ext.RustApi.Plugins
                 "> api.help - this message",
                 $"> api.reload - Reload extenstion configuration from file: {RustApiServices.ConfigFileName}",
                 "> api.users - List of registered users",
+                "> api.version - Installed version of RustApi extension",
             });
 
             Puts(string.Join("\n", messageLines));
@@ -86,5 +88,10 @@ namespace Oxide.Ext.RustApi.Plugins
                 return true;
             });
         }
+
+        /// <summary>
+        /// Print API extension version
+        /// </summary>
+        private void Version() => Puts(_ext.Version.ToString());
     }
 }
