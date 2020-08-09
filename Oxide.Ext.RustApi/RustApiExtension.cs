@@ -60,11 +60,6 @@ namespace Oxide.Ext.RustApi
             _logger.Info($"{Name} extension loaded");
         }
 
-        private void OnPluginsUpdate(Plugin plugin)
-        {
-            Container.Get<ICommandRoute>().UpdateApiPluginsCache();
-        }
-
         /// <inheritdoc />
         public override void OnShutdown()
         {
@@ -72,9 +67,21 @@ namespace Oxide.Ext.RustApi
             _logger.Info($"{Name} extension unloaded");
         }
 
+        /// <summary>
+        /// Reload configuration file
+        /// </summary>
         public void ReloadConfiguration()
         {
             _logger.Info("Extenstion configuration reloaded");
+        }
+
+        /// <summary>
+        /// Reload plugin commands on plugins updates
+        /// </summary>
+        /// <param name="plugin"></param>
+        private void OnPluginsUpdate(Plugin plugin)
+        {
+            Container.Get<ICommandRoute>().UpdateApiPluginsCache();
         }
     }
 }
