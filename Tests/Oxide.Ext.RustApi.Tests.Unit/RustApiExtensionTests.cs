@@ -1,9 +1,8 @@
-﻿using Oxide.Core.Extensions;
-using Xunit;
+﻿using Xunit;
 
 namespace Oxide.Ext.RustApi.Tests.Unit
 {
-    public class RustApiEntryTests
+    public class RustApiExtensionTests
     {
         [Fact]
         public void ExtInfoTest_Default_Expected()
