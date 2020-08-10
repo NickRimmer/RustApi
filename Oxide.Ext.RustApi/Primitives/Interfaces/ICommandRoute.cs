@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Oxide.Ext.RustApi.Business.Routes;
 using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Primitives.Interfaces
@@ -20,5 +21,10 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// Update list of Api plugins
         /// </summary>
         void UpdateApiPluginsCache();
+
+        /// <summary>
+        /// Available commands list.
+        /// </summary>
+        IReadOnlyList<string> CommandsInfo { get; }
     }
 }

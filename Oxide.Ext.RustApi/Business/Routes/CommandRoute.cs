@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Oxide.Core;
+﻿using Oxide.Core;
 using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Attributes;
 using Oxide.Ext.RustApi.Primitives.Exceptions;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -16,12 +16,12 @@ namespace Oxide.Ext.RustApi.Business.Routes
     internal class CommandRoute : RouteBase, ICommandRoute
     {
         private readonly ILogger<CommandRoute> _logger;
-        private IReadOnlyList<ApiPlugin> _apiPlugins;
+        private IReadOnlyList<CommandPluginInfo> _apiPlugins;
 
         public CommandRoute(ILogger<CommandRoute> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _apiPlugins = new ApiPlugin[0];
+            _apiPlugins = new CommandPluginInfo[0];
         }
 
         /// <inheritdoc />
@@ -31,6 +31,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             // let's inform client in case if there is no any commands
             if (!_apiPlugins.Any()) throw new ApiCommandNotFoundException($"No methods found for the command '{request.CommandName}'");
+
+            var found = false;
 
             foreach (var apiPlugin in _apiPlugins)
             {
@@ -44,11 +46,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
                     .Where(x => IsUserHasAccess(user, x.ApiInfo.RequiredPermissions));
 
                 // in case if command with requested name not found
-                if (!apiCommands.Any())
-                {
-                    var userName = user.IsAnonymous ? "Anonymous" : user.Name;
-                    throw new ApiCommandNotFoundException($"Command '{request.CommandName}' not found for user '{userName}'");
-                }
+                if (!apiCommands.Any()) continue;
+                found = true;
 
                 // execute api methods and build response
                 foreach (var apiMethod in apiCommands)
@@ -56,6 +55,12 @@ namespace Oxide.Ext.RustApi.Business.Routes
                     var methodResult = ExecuteMethod(apiPlugin, apiMethod, request, user);
                     if (methodResult != default) result.Add(methodResult);
                 }
+            }
+
+            if (!found) // in case if command with requested name not found
+            {
+                var userName = user.IsAnonymous ? "Anonymous" : user.Name;
+                throw new ApiCommandNotFoundException($"Command '{request.CommandName}' not found for user '{userName}'");
             }
 
             return result;
@@ -66,37 +71,45 @@ namespace Oxide.Ext.RustApi.Business.Routes
         {
             _apiPlugins = GetApiPlugins();
             var methodsFound = _apiPlugins.Sum(x => x.Methods.Count);
+            //var methodsNames = string.Join(", ", _apiPlugins.SelectMany(x=>x.Methods.Select(y=>y.ApiInfo.CommandName)))
+
             _logger.Info($"Api methods list updated: {methodsFound}");
         }
+
+        /// <inheritdoc />
+        public IReadOnlyList<string> CommandsInfo => _apiPlugins
+            .SelectMany(x => x.Methods
+                .Select(y => $"{y.ApiInfo.CommandName} ({string.Join(", ", y.ApiInfo.RequiredPermissions)})"))
+            .ToList();
 
         /// <summary>
         /// Execute method.
         /// </summary>
-        /// <param name="apiPlugin">Api plugin information.</param>
-        /// <param name="apiMethod">Api method information.</param>
+        /// <param name="commandsPluginInfo">Api plugin information.</param>
+        /// <param name="commandMethodInfo">Api method information.</param>
         /// <param name="request">Current request.</param>
         /// <param name="user">Current user info.</param>
         /// <returns></returns>
-        private object ExecuteMethod(ApiPlugin apiPlugin, ApiMethod apiMethod, ApiCommandRequest request, ApiUserInfo user)
+        private object ExecuteMethod(CommandPluginInfo commandsPluginInfo, CommandMethodInfo commandMethodInfo, ApiCommandRequest request, ApiUserInfo user)
         {
             try
             {
                 // build required parameters (in case of unknown type will set as default)
-                var parameters = apiMethod
+                var parameters = commandMethodInfo
                     .Method
                     .GetParameters()
                     .Select(x =>
                     {
                         if (x.ParameterType == typeof(ApiCommandRequest)) return request;
                         if (x.ParameterType == typeof(ApiUserInfo)) return user;
-                        if (x.ParameterType == typeof(ApiCommandAttribute)) return apiMethod.ApiInfo;
+                        if (x.ParameterType == typeof(ApiCommandAttribute)) return commandMethodInfo.ApiInfo;
 
                         return default(object);
                     })
                     .ToArray();
 
                 // invoke target method
-                var result = apiMethod.Method.Invoke(apiPlugin.Instance, parameters);
+                var result = commandMethodInfo.Method.Invoke(commandsPluginInfo.Instance, parameters);
                 return result;
             }
             catch (Exception ex)
@@ -110,7 +123,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// Looking for plugins with target methods.
         /// </summary>
         /// <returns></returns>
-        private static List<ApiPlugin> GetApiPlugins()
+        private static List<CommandPluginInfo> GetApiPlugins()
         {
             var plugins = Interface.uMod.RootPluginManager.GetPlugins();
             var result = plugins
@@ -126,7 +139,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// </summary>
         /// <param name="plugin">Rust plugin.</param>
         /// <returns></returns>
-        private static ApiPlugin BuildApiPlugin(Plugin plugin)
+        private static CommandPluginInfo BuildApiPlugin(Plugin plugin)
         {
             var methods = plugin
                 .GetType()
@@ -137,7 +150,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             if (!methods.Any()) return default;
 
-            var result = new ApiPlugin
+            var result = new CommandPluginInfo
             {
                 Instance = plugin,
                 Methods = methods
@@ -151,37 +164,19 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// </summary>
         /// <param name="method">Type method info.</param>
         /// <returns></returns>
-        private static ApiMethod BuildApiMethod(MethodInfo method)
+        private static CommandMethodInfo BuildApiMethod(MethodInfo method)
         {
             // looking for methods with particular attribute only
             var attribute = method.GetCustomAttribute(typeof(ApiCommandAttribute)) as ApiCommandAttribute;
             if (attribute == null) return default;
 
-            var result = new ApiMethod
+            var result = new CommandMethodInfo
             {
                 Method = method,
                 ApiInfo = attribute
             };
 
             return result;
-        }
-
-        /// <summary>
-        /// Api plugin information.
-        /// </summary>
-        private class ApiPlugin
-        {
-            public Plugin Instance { get; set; }
-            public IReadOnlyList<ApiMethod> Methods { get; set; }
-        }
-
-        /// <summary>
-        /// Api method information.
-        /// </summary>
-        private class ApiMethod
-        {
-            public MethodInfo Method { get; set; }
-            public ApiCommandAttribute ApiInfo { get; set; }
         }
     }
 

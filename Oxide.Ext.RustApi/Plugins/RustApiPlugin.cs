@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Oxide.Core.Libraries.Covalence;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Plugins
@@ -34,6 +35,7 @@ namespace Oxide.Ext.RustApi.Plugins
             RegisterConsoleCommand("api.reload", ReloadCfg);
             RegisterConsoleCommand("api.users", Users);
             RegisterConsoleCommand("api.version", GetVersion);
+            RegisterConsoleCommand("api.commands", GetCommands);
 
             // here can be any commands such user management, log level configuration, etc.
         }
@@ -51,6 +53,7 @@ namespace Oxide.Ext.RustApi.Plugins
                 $"> api.reload - Reload extenstion configuration from file: {RustApiServices.ConfigFileName}",
                 "> api.users - List of registered users",
                 "> api.version - Installed version of RustApi extension",
+                "> api.commands - List of cached commands",
             });
 
             Puts(string.Join("\n", messageLines));
@@ -93,5 +96,14 @@ namespace Oxide.Ext.RustApi.Plugins
         /// Print API extension version
         /// </summary>
         private void GetVersion() => Puts(_ext.Version.ToString());
+
+        /// <summary>
+        /// Print list of api commands
+        /// </summary>
+        private void GetCommands()
+        {
+            var commands = _ext.Container.Get<ICommandRoute>().CommandsInfo;
+            Puts(string.Join(", ", commands));
+        }
     }
 }
