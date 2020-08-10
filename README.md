@@ -1,3 +1,5 @@
+![Validation build](https://github.com/NickRimmer/RustApi/workflows/Validation%20build/badge.svg?branch=master)
+
 # RustApi
 Rust game server extension to provide **JSON Web API**.
 It will made possible to grant access with permissions to particular plugins methods or to execute any hooks via web request.
