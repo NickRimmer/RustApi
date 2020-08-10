@@ -19,26 +19,27 @@ Testing and improvement.
 After server have been started, you can find new configuration file here:
 `\server\oxide\rust-api.config.json`
 
-## Extension configuration
-Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Models/RustApiOptions.cs) and [ApiUserInfo](Oxide.Ext.RustApi/Models/ApiUserInfo.cs) objects (you can investigate it, there are summaries for all properties).
+## Configuration
+Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Primitives/Models/RustApiOptions.cs) and [ApiUserInfo](Oxide.Ext.RustApi/Models/ApiUserInfo.cs) objects (you can investigate it, there are summaries for all properties).
 
 [Read more](Configuration.md) about configuration file.
 
-# Api commands
-You can add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods and call them via Api requests to `{RustApiOptions.Endpoint}/command`.
+# Connection libraries
+- [RustApi.ClientNet](https://github.com/NickRimmer/RustApi.ClientNet) - .NET Standard 2.0
+
+It is quite easy to connect, so you can implement your own solution. [Read more](Connection.md) about how to do it.
+
+# API commands
+Just add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods.  
 
 [Read more](Commands.md) about api commands.
 
-## Authentication
-To identify user, for each request you should provide user name and secret string via request headers:
-- **ra_u** - header for user name (e.g. 'admin' or 'app-clans')
-- **ra_s** - header for secret value
-
 # Console commands
 - api.help - list of available console api commands
-- api.reload - Reload extenstion configuration from file: rust-api.config.json
+- api.reload - Reload extenstion configuration from file: `rust-api.config.json`
 - api.users - List of registered users
 - api.version - Installed version of RustApi extension
+- api.commands - Cached API commands
 
-# Do you have ideas?
-Let's write them in issues, and we will think about it together (;
+# Do you have any ideas?
+Feel free to write them in issues, and we will think about it together (;

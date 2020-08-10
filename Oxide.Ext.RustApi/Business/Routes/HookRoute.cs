@@ -27,7 +27,9 @@ namespace Oxide.Ext.RustApi.Business.Routes
     {
         public static MicroContainer AddHookRoutes(this MicroContainer container)
         {
+            container.AddSingle<IHookRoute, HookRoute>();
             var apiRoutes = container.Get<IApiRoutes>();
+
             apiRoutes.AddRoute<ApiHookRequest>(
                 "hook",
                 (user, request) => container.Get<IHookRoute>().OnCallHook(user, request));

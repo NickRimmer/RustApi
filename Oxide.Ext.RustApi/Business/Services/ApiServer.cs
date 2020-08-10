@@ -211,7 +211,7 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             if (!_apiRoutes.TryGetHandler(route, out var routeHandler))
             {
-                _logger.Error($"Route not found: {route}");
+                _logger.Warning($"Route not found: {route}");
                 statusCode = 404;
 
                 return false;

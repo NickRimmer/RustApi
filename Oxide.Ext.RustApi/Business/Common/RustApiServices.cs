@@ -27,10 +27,10 @@ namespace Oxide.Ext.RustApi.Business.Common
                 .AddSingle(GetOptions()) //TODO read from configuration
                 .AddSingle<IApiServer, ApiServer>()
                 .AddSingle<IAuthenticationService, SimpleAuthenticationService>()
-                .AddSingle<IApiRoutes, ApiRoutes>()
                 .AddSingle<RustApiPlugin>();
 
             container
+                .AddSingle<IApiRoutes, ApiRoutes>()
                 .AddHookRoutes()
                 .AddCommandRoutes()
                 .AddSystemRoutes();
