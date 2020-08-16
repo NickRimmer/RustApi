@@ -1,4 +1,4 @@
-![Validation build](https://github.com/NickRimmer/RustApi/workflows/Validation%20build/badge.svg?branch=master)
+![Validation build](https://github.com/NickRimmer/RustApi/workflows/Validation%20build/badge.svg?branch=master) ![Latest release](https://img.shields.io/github/v/release/NickRimmer/RustApi)
 
 # RustApi
 Rust game server extension to provide **JSON Web API**.
