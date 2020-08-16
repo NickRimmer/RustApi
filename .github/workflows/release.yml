@@ -35,9 +35,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Temp v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
-          release_name: Temp release v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
-          draft: true
+          tag_name: v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
+          release_name: Release v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
+          draft: false
           prerelease: false
           
       - name: Upload Release Asset
