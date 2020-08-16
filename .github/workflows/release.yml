@@ -1,0 +1,46 @@
+name: Publish release
+on:
+  workflow_dispatch:
+  
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.200
+
+      - name: Install dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        
+      - name: Test
+        run: dotnet test Tests/Oxide.Ext.RustApi.Tests.Unit/Oxide.Ext.RustApi.Tests.Unit.csproj --no-restore --verbosity normal
+
+      # Create and upload release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: Temp
+          release_name: Temp release
+          draft: true
+          prerelease: false
+          
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Oxide.Ext.RustApi/bin/Release/netstandard2.0/Oxide.Ext.RustApi.dll
+          asset_name: Oxide.Ext.RustApi.dll
+          #asset_content_type: application/zip
