@@ -22,6 +22,12 @@ jobs:
       - name: Test
         run: dotnet test Tests/Oxide.Ext.RustApi.Tests.Unit/Oxide.Ext.RustApi.Tests.Unit.csproj --no-restore --verbosity normal
 
+      - name: Get version
+        id: get_version
+        uses: jasondavis303/net-sdk-proj-file-version
+        with:
+          PROJ_FILE: Oxide.Ext.RustApi/Oxide.Ext.RustApi.csproj
+          
       # Create and upload release
       - name: Create Release
         id: create_release
@@ -29,8 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: Temp
-          release_name: Temp release
+          tag_name: Temp v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
+          release_name: Temp release v${{ steps.get_version.outputs.ASSEMBLY_VERSION }}
           draft: true
           prerelease: false
           
