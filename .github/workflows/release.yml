@@ -24,7 +24,7 @@ jobs:
 
       - name: Get version
         id: get_version
-        uses: jasondavis303/net-sdk-proj-file-version@latest
+        uses: jasondavis303/net-sdk-proj-file-version@v1.0.1
         with:
           PROJ_FILE: Oxide.Ext.RustApi/Oxide.Ext.RustApi.csproj
           
