@@ -13,7 +13,7 @@ namespace Oxide.Ext.RustApi.Business.Common
 {
     internal static class RustApiServices
     {
-        internal const string ConfigFileName = "rust-api.config.json";
+        internal const string DefaultConfigFileName = "rust-api.config.json";
         private const string DefaultEndpoint = "http://*:28017";
 
         /// <summary>
@@ -22,9 +22,10 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// <returns></returns>
         public static MicroContainer AddRustApiServices(this MicroContainer container)
         {
+            container.AddOptions();
+
             container
                 .Add(typeof(ILogger<>), typeof(UModLogger<>))
-                .AddSingle(GetOptions()) //TODO read from configuration
                 .AddSingle<IApiServer, ApiServer>()
                 .AddSingle<IAuthenticationService, SimpleAuthenticationService>()
                 .AddSingle<RustApiPlugin>();
@@ -38,20 +39,43 @@ namespace Oxide.Ext.RustApi.Business.Common
             return container;
         }
 
-        private static RustApiOptions GetOptions()
+        /// <summary>
+        /// Add extension options
+        /// </summary>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public static MicroContainer AddOptions(this MicroContainer container) => container.AddSingle(GetOptions());
+
+        /// <summary>
+        /// Read options method
+        /// </summary>
+        /// <param name="configFileName">Configuration file name</param>
+        /// <returns></returns>
+        private static RustApiOptions GetOptions(string configFileName = DefaultConfigFileName)
         {
             RustApiOptions options;
+            
+            var directory = Interface.uMod?.InstanceDirectory;
+            if (string.IsNullOrEmpty(directory))
+            {
+                Interface.uMod.LogWarning("Oxide instance directory not set, will be used current application directory to read configuration file");
+                directory = Directory.GetCurrentDirectory();
+            }
 
             // try to read configuration file
-            var path = Path.Combine(Interface.uMod.InstanceDirectory, ConfigFileName);
+            var path = Path.Combine(directory, configFileName);
             if (File.Exists(path))
             {
+                Interface.uMod.LogInfo($"Read configuration file: {path}");
+
                 // read from file
                 var str = File.ReadAllText(path);
                 options = JsonConvert.DeserializeObject<RustApiOptions>(str);
             }
             else
             {
+                Interface.uMod.LogInfo($"Create configuration file: {path}");
+
                 // set and store default
                 options = new RustApiOptions(DefaultEndpoint, new List<ApiUserInfo>
                 {

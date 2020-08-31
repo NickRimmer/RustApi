@@ -1,0 +1,22 @@
+{
+  "Endpoint": "http://*:28017",
+  "LogToFile": true,
+  "LogLevel": "Debug",
+  "Users": [
+    {
+      "Name": "admin",
+      "Secret": "secret1",
+      "Permissions": [
+        "admin"
+      ]
+    },
+    {
+      "Name": "user1",
+      "Secret": "secret2",
+      "Permissions": [
+        "command1",
+	      "hooks"
+      ]
+    }
+  ]
+}

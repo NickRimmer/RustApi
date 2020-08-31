@@ -50,7 +50,7 @@ namespace Oxide.Ext.RustApi.Plugins
             {
                 "Console commands:",
                 "> api.help - this message",
-                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.ConfigFileName}",
+                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.DefaultConfigFileName}",
                 "> api.users - List of registered users",
                 "> api.version - Installed version of RustApi extension",
                 "> api.commands - List of cached commands",
