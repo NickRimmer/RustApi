@@ -72,6 +72,9 @@ namespace Oxide.Ext.RustApi
         /// </summary>
         public void ReloadConfiguration()
         {
+            // read options from file again
+            Container.AddOptions();
+
             _logger.Info("Extenstion configuration reloaded");
         }
 

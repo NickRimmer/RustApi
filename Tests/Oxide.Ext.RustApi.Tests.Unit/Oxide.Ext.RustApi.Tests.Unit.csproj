@@ -17,4 +17,10 @@
     <ProjectReference Include="..\..\Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="rust-api.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

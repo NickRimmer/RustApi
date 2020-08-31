@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Oxide.Core;
+using Oxide.Ext.RustApi.Primitives.Enums;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
 
@@ -9,21 +10,31 @@ namespace Oxide.Ext.RustApi.Business.Services
     /// <inheritdoc />
     internal class UModLogger<T> : ILogger<T>
     {
-        private readonly RustApiOptions _options;
+        private readonly MinimumLogLevel _logLevel;
+        private readonly bool _logToFile;
         private const string LogName = "RustApi";
+
+        public UModLogger()
+        {
+            _logLevel = MinimumLogLevel.Information;
+            _logToFile = false;
+        }
 
         public UModLogger(RustApiOptions options)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            
+            _logLevel = options.LogLevel;
+            _logToFile = options.LogToFile;
         }
 
         /// <inheritdoc />
         public void Debug(string message)
         {
-            if ((byte)_options.LogLevel < 4) return;
+            if ((byte)_logLevel < 4) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod.LogDebug(text);
+            Interface.uMod?.LogDebug(text);
 
             LogToFile($"[DEBUG] {text}");
         }
@@ -31,10 +42,10 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <inheritdoc />
         public void Error(string message)
         {
-            if ((byte)_options.LogLevel < 1) return;
+            if ((byte)_logLevel < 1) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod.LogError(text);
+            Interface.uMod?.LogError(text);
 
             LogToFile($"[ERROR] {text}");
         }
@@ -42,11 +53,11 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <inheritdoc />
         public void Error(Exception ex, string message = null)
         {
-            if ((byte)_options.LogLevel < 1) return;
+            if ((byte)_logLevel < 1) return;
 
             var finalMessage = string.IsNullOrEmpty(message) ? ex.Message : message;
             var text = $"[{typeof(T).Name}] {finalMessage}";
-            Interface.uMod.LogException(text, ex);
+            Interface.uMod?.LogException(text, ex);
 
             LogToFile($"[ERROR] {text}");
         }
@@ -54,10 +65,10 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <inheritdoc />
         public void Warning(string message)
         {
-            if ((byte)_options.LogLevel < 2) return;
+            if ((byte)_logLevel < 2) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod.LogWarning(text);
+            Interface.uMod?.LogWarning(text);
 
             LogToFile($"[WARN] {text}");
         }
@@ -65,10 +76,10 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <inheritdoc />
         public void Info(string message)
         {
-            if ((byte)_options.LogLevel < 3) return;
+            if ((byte)_logLevel < 3) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod.LogInfo(text);
+            Interface.uMod?.LogInfo(text);
 
             LogToFile($"[INFO] {text}");
         }
@@ -79,7 +90,7 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <param name="text">Text to store to file</param>
         private void LogToFile(string text)
         {
-            if (!_options.LogToFile) return;
+            if (!_logToFile) return;
 
             var now = DateTime.Now;
             var path = Path.Combine(Interface.Oxide.LogDirectory, LogName);
