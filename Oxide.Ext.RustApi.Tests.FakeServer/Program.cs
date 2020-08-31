@@ -25,10 +25,13 @@ namespace Oxide.Ext.RustApi.Tests.FakeServer
 
             Console.ReadKey();
 
-            Console.WriteLine("Shutting down...");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\nShutting down...\n");
+            Console.ResetColor();
+
             extension.OnShutdown();
 
-            Environment.Exit(-1);
+            //Environment.Exit(-1);
         }
 
         private static ExtensionManager BuildExtensionsManager()
