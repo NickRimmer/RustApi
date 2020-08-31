@@ -14,7 +14,7 @@ namespace Oxide.Ext.RustApi.Primitives.Models
             string endpoint, 
             List<ApiUserInfo> users = null,
             bool logToFile = false,
-            MinimumLogLevel logLevel = MinimumLogLevel.Error
+            MinimumLogLevel logLevel = MinimumLogLevel.Information
         )
         {
             if (!Enum.IsDefined(typeof(MinimumLogLevel), logLevel)) 

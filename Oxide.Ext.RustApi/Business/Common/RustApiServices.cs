@@ -53,10 +53,10 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// <returns></returns>
         private static RustApiOptions GetOptions(MicroContainer container, string configFileName = DefaultConfigFileName)
         {
-            var logger = container.Get<ILogger<RustApiExtension>>(false) ?? new UModLogger<RustApiExtension>();
+            var logger = container.Get<ILogger<RustApiExtension>>(false) ?? new UModLogger<RustApiExtension>(new RustApiOptions(string.Empty));
             RustApiOptions options;
             
-            var directory = Interface.uMod?.InstanceDirectory;
+            var directory = RustApiExtension.OxideHelper.GetInstanceDirectory();
             if (string.IsNullOrEmpty(directory))
             {
                 logger.Warning("Oxide instance directory not set, will be used current application directory to read configuration file");

@@ -18,7 +18,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
             if (!IsUserHasAccess(user, hooksAccessPermission))
                 throw new SecurityException($"User '{user}' hasn't required permission '{hooksAccessPermission}'");
 
-            var result = Interface.uMod.CallHook(apiHookInfo.HookName, apiHookInfo.Parameters);
+            var result = RustApiExtension.OxideHelper.CallHook(apiHookInfo.HookName, apiHookInfo.Parameters);
             return result;
         }
     }

@@ -26,9 +26,7 @@ namespace Oxide.Ext.RustApi.Plugins
             Version = AssemblyInfo.ReadAssemblyVersion();
 
             // get access to extension
-            _ext = Interface.uMod
-                .GetAllExtensions()
-                .First(x => x is RustApiExtension) as RustApiExtension;
+            _ext = RustApiExtension.OxideHelper.GetExtension<RustApiExtension>();
 
             // register commands
             RegisterConsoleCommand("api.help", Help);
