@@ -44,21 +44,22 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// </summary>
         /// <param name="container"></param>
         /// <returns></returns>
-        public static MicroContainer AddOptions(this MicroContainer container) => container.AddSingle(GetOptions());
+        public static MicroContainer AddOptions(this MicroContainer container) => container.AddSingle(GetOptions(container));
 
         /// <summary>
         /// Read options method
         /// </summary>
         /// <param name="configFileName">Configuration file name</param>
         /// <returns></returns>
-        private static RustApiOptions GetOptions(string configFileName = DefaultConfigFileName)
+        private static RustApiOptions GetOptions(MicroContainer container, string configFileName = DefaultConfigFileName)
         {
+            var logger = container.Get<ILogger<RustApiExtension>>(false) ?? new UModLogger<RustApiExtension>();
             RustApiOptions options;
             
             var directory = Interface.uMod?.InstanceDirectory;
             if (string.IsNullOrEmpty(directory))
             {
-                Interface.uMod.LogWarning("Oxide instance directory not set, will be used current application directory to read configuration file");
+                logger.Warning("Oxide instance directory not set, will be used current application directory to read configuration file");
                 directory = Directory.GetCurrentDirectory();
             }
 
@@ -66,7 +67,7 @@ namespace Oxide.Ext.RustApi.Business.Common
             var path = Path.Combine(directory, configFileName);
             if (File.Exists(path))
             {
-                Interface.uMod.LogInfo($"Read configuration file: {path}");
+                logger.Info($"Read configuration file: {path}");
 
                 // read from file
                 var str = File.ReadAllText(path);
@@ -74,7 +75,7 @@ namespace Oxide.Ext.RustApi.Business.Common
             }
             else
             {
-                Interface.uMod.LogInfo($"Create configuration file: {path}");
+                logger.Info($"Create configuration file: {path}");
 
                 // set and store default
                 options = new RustApiOptions(DefaultEndpoint, new List<ApiUserInfo>

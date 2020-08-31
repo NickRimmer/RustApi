@@ -91,9 +91,10 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// Get instance by registration type.
         /// </summary>
         /// <typeparam name="TRegistration">Registration type.</typeparam>
+        /// <param name="throwException">Throw exception if service not registered.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException">Can throw exception in case if requested class wasn't registered.</exception>
-        public TRegistration Get<TRegistration>() => (TRegistration)Get(typeof(TRegistration));
+        public TRegistration Get<TRegistration>(bool throwException = true) => (TRegistration)Get(typeof(TRegistration), throwException);
 
         /// <summary>
         /// Default builder of instances.
@@ -128,9 +129,10 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// Looking for class by registration type.
         /// </summary>
         /// <param name="requestType">Registration type.</param>
+        /// <param name="throwException">Throw exception if not found.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException">Can throw exception in case if requested class wasn't registered.</exception>
-        private object Get(Type requestType)
+        private object Get(Type requestType, bool throwException = true)
         {
             if (!_registrations.TryGetValue(requestType, out var builder))
             {
@@ -139,7 +141,10 @@ namespace Oxide.Ext.RustApi.Business.Common
 
                 // try to find by definition
                 if (!_registrations.TryGetValue(requestType.GetGenericTypeDefinition(), out builder))
-                    throw new KeyNotFoundException($"Container service not found: {requestType.FullName}");
+                {
+                    if (throwException) throw new KeyNotFoundException($"Container service not found: {requestType.FullName}");
+                    return default;
+                }
             }
 
             return builder.Invoke(requestType);
