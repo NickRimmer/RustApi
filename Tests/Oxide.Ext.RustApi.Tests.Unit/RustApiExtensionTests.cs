@@ -1,13 +1,16 @@
-﻿using Xunit;
+﻿using NSubstitute;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
+using Xunit;
 
 namespace Oxide.Ext.RustApi.Tests.Unit
 {
     public class RustApiExtensionTests
     {
         [Fact]
-        public void ExtInfoTest_Default_Expected()
+        internal void ExtInfoTest_Default_Expected()
         {
             // arrange
+            RustApiExtension.OxideHelper = Substitute.For<IOxideHelper>();
             var instance = new RustApiExtension(null);
 
             // act

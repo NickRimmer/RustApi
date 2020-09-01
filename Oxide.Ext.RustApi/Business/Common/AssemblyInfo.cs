@@ -5,6 +5,7 @@ using Oxide.Core;
 
 [assembly: InternalsVisibleTo("Oxide.Ext.RustApi.Tests.Unit")]
 [assembly: InternalsVisibleTo("Oxide.Ext.RustApi.Tests.FakeServer")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace Oxide.Ext.RustApi.Business.Common
 {
