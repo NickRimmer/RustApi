@@ -2,10 +2,10 @@
 using Oxide.Core.Extensions;
 using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
+using Oxide.Ext.RustApi.Plugins;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using System.Reflection;
-using Oxide.Core.Libraries.Covalence;
-using Oxide.Ext.RustApi.Plugins;
+using Oxide.Ext.RustApi.Business.Services;
 
 namespace Oxide.Ext.RustApi
 {
@@ -14,12 +14,14 @@ namespace Oxide.Ext.RustApi
     /// </summary>
     public class RustApiExtension : Extension
     {
+        internal static IOxideHelper OxideHelper;
+
         private readonly ILogger<RustApiExtension> _logger;
 
         /// <inheritdoc />
         public RustApiExtension(ExtensionManager manager) : base(manager)
         {
-            if (manager == null) return;
+            if (OxideHelper == null) OxideHelper = new OxideHelper();
 
             Container = new MicroContainer()
                 .AddSingle(this)
@@ -51,11 +53,7 @@ namespace Oxide.Ext.RustApi
             Container.Get<IApiServer>().Start();
 
             // update command methods cache
-            Interface.uMod.RootPluginManager.OnPluginAdded += OnPluginsUpdate;
-            Interface.uMod.RootPluginManager.OnPluginRemoved += OnPluginsUpdate;
-
-            //Interface.uMod.RootPluginManager.
-            //Interface.uMod.ServerConsole.Input += s => _logger.Info(s);
+            RustApiExtension.OxideHelper.OnPluginsUpdate += OnPluginsUpdate;
 
             _logger.Info($"{Name} extension loaded");
         }

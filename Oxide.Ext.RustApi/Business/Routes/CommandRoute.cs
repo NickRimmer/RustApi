@@ -125,7 +125,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// <returns></returns>
         private static List<CommandPluginInfo> GetApiPlugins()
         {
-            var plugins = Interface.uMod.RootPluginManager.GetPlugins();
+            var plugins = RustApiExtension.OxideHelper.GetPlugins();
             var result = plugins
                 .Select(BuildApiPlugin)
                 .Where(x => x != default) // filter plugins without target methods

@@ -14,12 +14,6 @@ namespace Oxide.Ext.RustApi.Business.Services
         private readonly bool _logToFile;
         private const string LogName = "RustApi";
 
-        public UModLogger()
-        {
-            _logLevel = MinimumLogLevel.Information;
-            _logToFile = false;
-        }
-
         public UModLogger(RustApiOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -34,7 +28,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             if ((byte)_logLevel < 4) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod?.LogDebug(text);
+            RustApiExtension.OxideHelper.LogDebug(text);
 
             LogToFile($"[DEBUG] {text}");
         }
@@ -45,7 +39,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             if ((byte)_logLevel < 1) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod?.LogError(text);
+            RustApiExtension.OxideHelper.LogError(text);
 
             LogToFile($"[ERROR] {text}");
         }
@@ -57,7 +51,7 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             var finalMessage = string.IsNullOrEmpty(message) ? ex.Message : message;
             var text = $"[{typeof(T).Name}] {finalMessage}";
-            Interface.uMod?.LogException(text, ex);
+            RustApiExtension.OxideHelper.LogException(text, ex);
 
             LogToFile($"[ERROR] {text}");
         }
@@ -68,7 +62,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             if ((byte)_logLevel < 2) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod?.LogWarning(text);
+            RustApiExtension.OxideHelper.LogWarning(text);
 
             LogToFile($"[WARN] {text}");
         }
@@ -79,7 +73,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             if ((byte)_logLevel < 3) return;
 
             var text = $"[{typeof(T).Name}] {message}";
-            Interface.uMod?.LogInfo(text);
+            RustApiExtension.OxideHelper.LogInfo(text);
 
             LogToFile($"[INFO] {text}");
         }
