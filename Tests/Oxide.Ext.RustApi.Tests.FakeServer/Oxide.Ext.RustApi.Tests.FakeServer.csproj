@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj" />
+    <ProjectReference Include="..\..\Oxide.Ext.RustApi\Oxide.Ext.RustApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
