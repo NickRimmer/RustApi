@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Net;
 using Oxide.Ext.RustApi.Primitives.Models;
+using System.Net;
 
 namespace Oxide.Ext.RustApi.Primitives.Interfaces
 {
@@ -10,45 +10,38 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
     internal interface IApiRoutes
     {
         /// <summary>
-        /// Add route with expected response data model.
+        /// Route handler.
         /// </summary>
-        /// <typeparam name="T">Expected response data model.</typeparam>
-        /// <param name="route">Absolute url.</param>
-        /// <param name="callback">Callback function.</param>
+        /// <typeparam name="TRequest">Expected data type of request.</typeparam>
+        /// <param name="route">Route name.</param>
+        /// <param name="handler">Route request arguments.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute<T>(string route, Func<ApiUserInfo, T, object> callback) where T : class;
+        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler) where TRequest : class;
 
         /// <summary>
-        /// Add simple route.
+        /// Route handler without request body.
         /// </summary>
-        /// <param name="route">Absolute url.</param>
-        /// <param name="callback">Callback function.</param>
+        /// <param name="route">Route name.</param>
+        /// <param name="handler">Route request arguments.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, Func<ApiUserInfo, object> callback);
+        IApiRoutes AddRoute(string route, ApiRouteHandler<object> handler);
 
         /// <summary>
-        /// Add simple route with context.
+        /// Route handler without response.
         /// </summary>
-        /// <param name="route">Absolute url.</param>
-        /// <param name="callback">Callback function.</param>
+        /// <typeparam name="TRequest">Expected data type of request.</typeparam>
+        /// <param name="route">Route name.</param>
+        /// <param name="handler">Route request arguments.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, Func<ApiUserInfo, object, HttpListenerContext, object> callback);
+        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandlerNoResponse<TRequest> handler) where TRequest : class;
 
         /// <summary>
-        /// Add simple route without response and request data.
+        /// Route handler without request body and response.
         /// </summary>
-        /// <param name="route">Absolute url.</param>
-        /// <param name="callback">Callback function.</param>
+        /// <param name="route">Route name.</param>
+        /// <param name="handler">Route request arguments.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, Action<ApiUserInfo> callback);
-
-        /// <summary>
-        /// Add simple route without response data.
-        /// </summary>
-        /// <param name="route">Absolute url.</param>
-        /// <param name="callback">Callback function.</param>
-        /// <returns></returns>
-        IApiRoutes AddRoute<T>(string route, Action<ApiUserInfo, T> callback);
+        IApiRoutes AddRoute(string route, ApiRouteHandlerNoResponse<object> handler);
 
         /// <summary>
         /// Try to get handler for route.
@@ -56,15 +49,50 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <param name="route"></param>
         /// <param name="handler"></param>
         /// <returns></returns>
-        bool TryGetHandler(string route, out RouteHandlerArgs handler);
+        bool TryGetHandler(string route, out ApiRouteHandler<string> handler);
     }
 
     /// <summary>
-    /// Route handler delegate.
+    /// Api route request arguments.
     /// </summary>
-    /// <param name="userInfo">User information.</param>
-    /// <param name="content">Request content.</param>
-    /// <param name="context">Request context.</param>
+    internal class ApiRouteRequestArgs<TData> where TData: class
+    {
+        public ApiRouteRequestArgs(ApiUserInfo user, TData data, HttpListenerContext context)
+        {
+            User = user ?? throw new ArgumentNullException(nameof(user));
+            Data = data;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        /// <summary>
+        /// User information
+        /// </summary>
+        public ApiUserInfo User { get; }
+
+        /// <summary>
+        /// Request content.
+        /// </summary>
+        public TData Data { get; }
+
+        /// <summary>
+        /// Request context.
+        /// </summary>
+        public HttpListenerContext Context { get; }
+    }
+
+    /// <summary>
+    /// Route handler with expected request data type.
+    /// </summary>
+    /// <typeparam name="TRequest">Expected data type of request.</typeparam>
+    /// <param name="args">Request arguments.</param>
     /// <returns></returns>
-    public delegate object RouteHandlerArgs(ApiUserInfo userInfo, string content, HttpListenerContext context);
+    internal delegate object ApiRouteHandler<TRequest>(ApiRouteRequestArgs<TRequest> args) where TRequest : class;
+
+    /// <summary>
+    /// Route handler with expected request data type and without response.
+    /// </summary>
+    /// <typeparam name="TRequest">Expected data type of request.</typeparam>
+    /// <param name="args">Request arguments.</param>
+    /// <returns></returns>
+    internal delegate void ApiRouteHandlerNoResponse<TRequest>(ApiRouteRequestArgs<TRequest> args) where TRequest : class;
 }

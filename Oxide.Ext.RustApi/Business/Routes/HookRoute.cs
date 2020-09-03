@@ -31,7 +31,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             apiRoutes.AddRoute<ApiHookRequest>(
                 "hook",
-                (user, request) => container.Get<IHookRoute>().OnCallHook(user, request));
+                args => container.Get<IHookRoute>().OnCallHook(args.User, args.Data));
 
             return container;
         }

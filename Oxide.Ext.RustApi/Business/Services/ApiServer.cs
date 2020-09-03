@@ -111,14 +111,6 @@ namespace Oxide.Ext.RustApi.Business.Services
             {
                 var response = context.Response;
 
-                /*// only post methods allowed
-                if (!context.Request.HttpMethod.Equals("post", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    response.StatusCode = 405; // method not allowed
-                    response.Close();
-                    return;
-                }*/
-
                 // try to find route handler
                 var route = FormatUrl(context.Request.Url.AbsolutePath);
 
@@ -218,6 +210,16 @@ namespace Oxide.Ext.RustApi.Business.Services
             responseContent = default;
             statusCode = 200;
 
+            // anonymous users can have access only to routes starts with particular string
+            if (userInfo.IsAnonymous && !route.StartsWith($"{ApiRoutes.PublicRoutesPrefix}/"))
+            {
+                _logger.Warning($"Anonymouse user can't get access to route: {route}");
+                statusCode = 403;
+                
+                return false;
+            }
+
+
             if (!_apiRoutes.TryGetHandler(route, out var routeHandler))
             {
                 _logger.Warning($"Route not found: {route}");
@@ -228,7 +230,7 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             try
             {
-                responseContent = routeHandler.Invoke(userInfo, requestContent, context);
+                responseContent = routeHandler.Invoke(new ApiRouteRequestArgs<string>(userInfo, requestContent, context));
             }
             catch (Exception ex)
             {

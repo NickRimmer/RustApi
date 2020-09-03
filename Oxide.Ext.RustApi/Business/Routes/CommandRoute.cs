@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -189,7 +190,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             apiRoutes.AddRoute<ApiCommandRequest>(
                 "command",
-                (user, request) => container.Get<ICommandRoute>().OnCallCommand(user, request)
+                args => container.Get<ICommandRoute>().OnCallCommand(args.User, args.Data)
             );
 
             return container;
