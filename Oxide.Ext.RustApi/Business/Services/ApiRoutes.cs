@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using Newtonsoft.Json;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
@@ -22,7 +23,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
-            _routes.Add(url, (user, response) =>
+            _routes.Add(url, (user, response, _) =>
             {
                 T data = string.IsNullOrEmpty(response)
                     ? default
@@ -40,7 +41,17 @@ namespace Oxide.Ext.RustApi.Business.Services
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
-            _routes.Add(url, (user, _) => callback.Invoke(user));
+            _routes.Add(url, (user, _, __) => callback.Invoke(user));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IApiRoutes AddRoute(string route, Func<ApiUserInfo, object, HttpListenerContext, object> callback)
+        {
+            var url = ApiServer.FormatUrl(route);
+            if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
+
+            _routes.Add(url, (user, data, context) => callback.Invoke(user, data, context));
             return this;
         }
 
@@ -50,7 +61,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
-            _routes.Add(url, (user, _) =>
+            _routes.Add(url, (user, _, __) =>
             {
                 callback.Invoke(user);
                 return default;
@@ -65,7 +76,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
-            _routes.Add(url, (user, response) =>
+            _routes.Add(url, (user, response, _) =>
             {
                 T data = string.IsNullOrEmpty(response)
                     ? default

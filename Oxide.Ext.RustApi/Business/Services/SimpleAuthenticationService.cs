@@ -1,24 +1,32 @@
-﻿using System;
-using System.Linq;
-using System.Net;
+﻿using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
 namespace Oxide.Ext.RustApi.Business.Services
 {
     /// <inheritdoc />
     internal class SimpleAuthenticationService : IAuthenticationService
     {
+        public const string AdminPermission = "admin";
+        public const string PlayerPermission = "player";
+
         private const string UserHeaderName = "ra_u";
         private const string SecretHeaderName = "ra_s";
+        private const string UsersFileName = "rust-api.users.json";
 
-        private readonly RustApiOptions _options;
+        private readonly List<ApiUserInfo> _users;
         private readonly ILogger<SimpleAuthenticationService> _logger;
+        private readonly MicroContainer _container;
 
-        public SimpleAuthenticationService(RustApiOptions options, ILogger<SimpleAuthenticationService> logger)
+        public SimpleAuthenticationService(ILogger<SimpleAuthenticationService> logger, MicroContainer container)
         {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _container = container ?? throw new ArgumentNullException(nameof(container));
+            _users = OptionsManager.ReadOptions<List<ApiUserInfo>>(UsersFileName, _container, BuildDefaultUsersList);
         }
 
         /// <inheritdoc />
@@ -50,7 +58,51 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             // compare signs
             var result = secret.Equals(userInfo.Secret, StringComparison.InvariantCultureIgnoreCase);
-            if(!result) _logger.Warning($"Incorrect 'secret' for user '{user}'");
+            if (!result) _logger.Warning($"Incorrect 'secret' for user '{user}'");
+
+            return result;
+        }
+
+        /// <inheritdoc />
+        public bool TryToGetUser(string name, out ApiUserInfo userInfo)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                userInfo = ApiUserInfo.Anonymous;
+                return false;
+            }
+
+            // try to find user info
+            if (!TryGetUser(name, out userInfo))
+            {
+                _logger.Warning($"User '{name}' not found.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc />
+        public ApiUserInfo AddUser(string name, string secret, params string[] permissions)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (secret == null) throw new ArgumentNullException(nameof(secret));
+
+            var exist = _users.SingleOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+
+            // remove exist player info
+            if (exist != default) _users.Remove(exist);
+
+            var userPermissions = exist?.Permissions ?? new List<string>();
+
+            // setup permissions
+            foreach (var permission in permissions)
+                if (!userPermissions.Contains(permission, StringComparer.InvariantCultureIgnoreCase)) userPermissions.Add(permission);
+
+            // add user
+            var result = new ApiUserInfo(name, secret, userPermissions);
+            _users.Add(result);
+            OptionsManager.WriteOptions(UsersFileName, _users, _container);
 
             return result;
         }
@@ -66,10 +118,25 @@ namespace Oxide.Ext.RustApi.Business.Services
             userInfo = default;
 
             // let's find user options
-            userInfo = _options.Users.FirstOrDefault(x => x.Name.Equals(user, StringComparison.InvariantCultureIgnoreCase));
+            userInfo = _users.FirstOrDefault(x => x.Name.Equals(user, StringComparison.InvariantCultureIgnoreCase));
             if (userInfo == default) return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Build default list of users.
+        /// </summary>
+        /// <param name="container">Services container.</param>
+        /// <returns></returns>
+        private List<ApiUserInfo> BuildDefaultUsersList(MicroContainer container)
+        {
+            var result = new List<ApiUserInfo>
+            {
+                new ApiUserInfo("admin", Guid.NewGuid().ToString(), new List<string> {AdminPermission}),
+            };
+
+            return result;
         }
     }
 }

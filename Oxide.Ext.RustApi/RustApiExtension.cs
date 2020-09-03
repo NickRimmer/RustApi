@@ -2,10 +2,10 @@
 using Oxide.Core.Extensions;
 using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
+using Oxide.Ext.RustApi.Business.Services;
 using Oxide.Ext.RustApi.Plugins;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using System.Reflection;
-using Oxide.Ext.RustApi.Business.Services;
 
 namespace Oxide.Ext.RustApi
 {
@@ -14,20 +14,23 @@ namespace Oxide.Ext.RustApi
     /// </summary>
     public class RustApiExtension : Extension
     {
-        internal static IOxideHelper OxideHelper;
-
         private readonly ILogger<RustApiExtension> _logger;
+        private static IOxideHelper _oxideHelper;
 
         /// <inheritdoc />
         public RustApiExtension(ExtensionManager manager) : base(manager)
         {
-            if (OxideHelper == null) OxideHelper = new OxideHelper();
-
             Container = new MicroContainer()
                 .AddSingle(this)
                 .AddRustApiServices();
 
             _logger = Container.Get<ILogger<RustApiExtension>>();
+        }
+
+        internal static IOxideHelper OxideHelper
+        {
+            get => _oxideHelper ?? (_oxideHelper = new OxideHelper());
+            set => _oxideHelper = value;
         }
 
         internal MicroContainer Container { get; }
@@ -71,7 +74,7 @@ namespace Oxide.Ext.RustApi
         public void ReloadConfiguration()
         {
             // read options from file again
-            Container.AddOptions();
+            Container.LoadApiOptions();
 
             _logger.Info("Extenstion configuration reloaded");
         }

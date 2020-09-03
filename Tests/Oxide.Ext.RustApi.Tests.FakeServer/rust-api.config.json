@@ -1,15 +1,5 @@
 {
   "Endpoint": "http://localhost:28017",
-  "Users": [
-    {
-      "Name": "admin",
-      "Secret": "secret1",
-      "Permissions": [
-        "admin"
-      ],
-      "IsAnonymous": false
-    }
-  ],
   "LogToFile": false,
   "LogLevel": "Debug"
 }

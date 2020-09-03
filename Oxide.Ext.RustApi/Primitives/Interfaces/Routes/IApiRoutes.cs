@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Primitives.Interfaces
@@ -26,6 +27,14 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         IApiRoutes AddRoute(string route, Func<ApiUserInfo, object> callback);
 
         /// <summary>
+        /// Add simple route with context.
+        /// </summary>
+        /// <param name="route">Absolute url.</param>
+        /// <param name="callback">Callback function.</param>
+        /// <returns></returns>
+        IApiRoutes AddRoute(string route, Func<ApiUserInfo, object, HttpListenerContext, object> callback);
+
+        /// <summary>
         /// Add simple route without response and request data.
         /// </summary>
         /// <param name="route">Absolute url.</param>
@@ -42,7 +51,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         IApiRoutes AddRoute<T>(string route, Action<ApiUserInfo, T> callback);
 
         /// <summary>
-        /// Try to get handler for route
+        /// Try to get handler for route.
         /// </summary>
         /// <param name="route"></param>
         /// <param name="handler"></param>
@@ -51,10 +60,11 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
     }
 
     /// <summary>
-    /// Route handler delegate
+    /// Route handler delegate.
     /// </summary>
-    /// <param name="userInfo">User information</param>
-    /// <param name="content">Request content</param>
+    /// <param name="userInfo">User information.</param>
+    /// <param name="content">Request content.</param>
+    /// <param name="context">Request context.</param>
     /// <returns></returns>
-    public delegate object RouteHandlerArgs(ApiUserInfo userInfo, string content);
+    public delegate object RouteHandlerArgs(ApiUserInfo userInfo, string content, HttpListenerContext context);
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using Oxide.Core;
-using Oxide.Ext.RustApi.Business.Common;
-using Oxide.Plugins;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Oxide.Core.Libraries.Covalence;
+﻿using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
-using Oxide.Ext.RustApi.Primitives.Models;
+using Oxide.Plugins;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Oxide.Ext.RustApi.Plugins
 {
@@ -31,7 +27,6 @@ namespace Oxide.Ext.RustApi.Plugins
             // register commands
             RegisterConsoleCommand("api.help", Help);
             RegisterConsoleCommand("api.reload", ReloadCfg);
-            RegisterConsoleCommand("api.users", Users);
             RegisterConsoleCommand("api.version", GetVersion);
             RegisterConsoleCommand("api.commands", GetCommands);
 
@@ -49,7 +44,6 @@ namespace Oxide.Ext.RustApi.Plugins
                 "Console commands:",
                 "> api.help - this message",
                 $"> api.reload - Reload extenstion configuration from file: {RustApiServices.DefaultConfigFileName}",
-                "> api.users - List of registered users",
                 "> api.version - Installed version of RustApi extension",
                 "> api.commands - List of cached commands",
             });
@@ -63,18 +57,6 @@ namespace Oxide.Ext.RustApi.Plugins
         private void ReloadCfg() => _ext.ReloadConfiguration();
 
         /// <summary>
-        /// List of registered users
-        /// </summary>
-        /// <returns></returns>
-        private void Users()
-        {
-            var options = _ext.Container.Get<RustApiOptions>();
-            var users = options.Users.Select(x => x.Name);
-
-            Puts(string.Join(", ", users));
-        }
-
-        /// <summary>
         /// Help method to register commands
         /// </summary>
         /// <param name="command"></param>
@@ -84,7 +66,7 @@ namespace Oxide.Ext.RustApi.Plugins
             covalence.RegisterCommand(command, this, (caller, s, args) =>
             {
                 if (!caller.IsServer) return false;
-                
+
                 action.Invoke();
                 return true;
             });

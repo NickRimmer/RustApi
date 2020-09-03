@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Oxide.Ext.RustApi.Primitives.Exceptions;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
+using Oxide.Ext.RustApi.Primitives.Models;
+using System;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Threading;
-using Newtonsoft.Json;
-using Oxide.Ext.RustApi.Business.Common;
-using Oxide.Ext.RustApi.Primitives.Exceptions;
-using Oxide.Ext.RustApi.Primitives.Interfaces;
-using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Business.Services
 {
@@ -74,7 +72,7 @@ namespace Oxide.Ext.RustApi.Business.Services
             try
             {
                 if (_listener?.IsListening == true) _listener.Stop();
-                ((IDisposable) _listener)?.Dispose();
+                ((IDisposable)_listener)?.Dispose();
                 _listener = null;
             }
             catch
@@ -113,24 +111,26 @@ namespace Oxide.Ext.RustApi.Business.Services
             {
                 var response = context.Response;
 
-                // only post methods allowed
+                /*// only post methods allowed
                 if (!context.Request.HttpMethod.Equals("post", StringComparison.InvariantCultureIgnoreCase))
                 {
                     response.StatusCode = 405; // method not allowed
                     response.Close();
                     return;
-                }
+                }*/
 
                 // try to find route handler
                 var route = FormatUrl(context.Request.Url.AbsolutePath);
 
                 // try to read request body
-                if (!TryToReadBody(context.Request, out var requestContent))
-                {
-                    response.StatusCode = 500;
-                    response.Close();
-                    return;
-                }
+                var requestContent = string.Empty;
+                if (context.Request.HttpMethod.Equals("post", StringComparison.InvariantCultureIgnoreCase))
+                    if (!TryToReadBody(context.Request, out requestContent))
+                    {
+                        response.StatusCode = 500;
+                        response.Close();
+                        return;
+                    }
 
                 // validate user
                 if (!_authenticationService.TryToGetUser(context, out var userInfo))
@@ -141,7 +141,7 @@ namespace Oxide.Ext.RustApi.Business.Services
                 }
 
                 // execute handler
-                if (!TryToExecuteHandler(userInfo, route, requestContent, out var statusCode, out var responseContent))
+                if (!TryToExecuteHandler(userInfo, route, requestContent, context, out var statusCode, out var responseContent))
                 {
                     response.StatusCode = statusCode;
                     response.Close();
@@ -151,6 +151,15 @@ namespace Oxide.Ext.RustApi.Business.Services
                 // if handler result not empty, build response body
                 if (responseContent != default)
                 {
+                    // redirect in case we have URI
+                    if (responseContent is Uri responseUri)
+                    {
+                        response.RedirectLocation = responseUri.ToString();
+                        response.StatusCode = 302;
+                        response.Close();
+                        return;
+                    }
+
                     if (!TryToWriteResponse(responseContent, context.Response))
                     {
                         response.StatusCode = 500;
@@ -204,7 +213,7 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <param name="statusCode">Result http status code.</param>
         /// <param name="responseContent">Response body.</param>
         /// <returns></returns>
-        private bool TryToExecuteHandler(ApiUserInfo userInfo, string route, string requestContent, out int statusCode, out object responseContent)
+        private bool TryToExecuteHandler(ApiUserInfo userInfo, string route, string requestContent, HttpListenerContext context, out int statusCode, out object responseContent)
         {
             responseContent = default;
             statusCode = 200;
@@ -219,7 +228,7 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             try
             {
-                responseContent = routeHandler.Invoke(userInfo, requestContent);
+                responseContent = routeHandler.Invoke(userInfo, requestContent, context);
             }
             catch (Exception ex)
             {

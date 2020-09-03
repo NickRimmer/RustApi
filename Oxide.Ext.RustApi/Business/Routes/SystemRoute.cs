@@ -1,5 +1,6 @@
 ﻿using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
+using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -27,6 +28,13 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
         /// <inheritdoc />
         public void OnTestError() => _logger.Error("Error test log");
+
+        /// <inheritdoc />
+        public object OnUserInfo(ApiUserInfo user) => new
+        {
+            user.Name,
+            user.Permissions
+        };
     }
 
     internal static class SystemRouteExtension
@@ -41,7 +49,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
                 .AddRoute("system/test/debug", (user) => container.Get<ISystemRoute>().OnTestDebug())
                 .AddRoute("system/test/info", (user) => container.Get<ISystemRoute>().OnTestInfo())
                 .AddRoute("system/test/warning", (user) => container.Get<ISystemRoute>().OnTestWarning())
-                .AddRoute("system/test/error", (user) => container.Get<ISystemRoute>().OnTestError());
+                .AddRoute("system/test/error", (user) => container.Get<ISystemRoute>().OnTestError())
+                .AddRoute("system/user", (user) => container.Get<ISystemRoute>().OnUserInfo(user));
 
             return container;
         }

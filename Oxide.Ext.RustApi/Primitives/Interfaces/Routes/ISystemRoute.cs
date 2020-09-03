@@ -1,4 +1,6 @@
-﻿namespace Oxide.Ext.RustApi.Primitives.Interfaces
+﻿using Oxide.Ext.RustApi.Primitives.Models;
+
+namespace Oxide.Ext.RustApi.Primitives.Interfaces
 {
     /// <summary>
     /// System and test routes.
@@ -30,5 +32,12 @@
         /// To test logger.
         /// </summary>
         void OnTestError();
+
+        /// <summary>
+        /// Get user info.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        object OnUserInfo(ApiUserInfo user);
     }
 }
