@@ -43,10 +43,9 @@ Just add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods.
 
 # Players steam authorization
 API service provide authorization of users via `Steam Login page`.  
-New players will be registerd as regular user with `Steam ID` as `Name` and random `Secret` value.  
-[Read more](SteamAuth.md) information about Steam authorization.
+New players will be registerd as regular user with `Steam ID` as name and random secret value.  
 
-TODO: not described yet -_-
+[Read more](SteamAuth.md) information about Steam authorization.
 
 # Do you have any ideas?
 Feel free to write them in issues, and we will think about it together (;
