@@ -59,7 +59,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
             if (!isValid)
             {
                 _logger.Warning($"Invalid login (steam response)");
-                return BuildCallbackUrl(context, null);
+                return BuildCallbackUrl(context, null, null);
             }
             else _logger.Debug($"Logged user with steam ID: {steamId}");
 
@@ -68,7 +68,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
             var playerInfo = _authService.AddUser(steamId, playerSecret, AuthenticationService.PlayerPermission);
             _logger.Debug($"Added new user with player permission: {playerInfo.Secret}");
 
-            var result = BuildCallbackUrl(context, playerInfo.Secret);
+            var result = BuildCallbackUrl(context, playerInfo.Name, playerInfo.Secret);
             return result;
         }
 
@@ -92,15 +92,16 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// Build url for callback.
         /// </summary>
         /// <param name="context">Request context.</param>
-        /// <param name="key">Player secret value. If empty will be generated url with error message.</param>
+        /// <param name="name">Player name value.</param>
+        /// <param name="secret">Player secret value. If empty will be generated url with error message.</param>
         /// <returns></returns>
-        private static Uri BuildCallbackUrl(HttpListenerContext context, string key)
+        private static Uri BuildCallbackUrl(HttpListenerContext context, string name, string secret)
         {
             // try to read custom callback value from GET params
             var customCallback = context.Request.QueryString.Get(CustomCallbackQueryParam);
-            var query = string.IsNullOrEmpty(key)
+            var query = string.IsNullOrEmpty(secret)
                 ? "error=invalid_login" // if steam wasn't confirm authorization
-                : $"key={key}"; // otherwise we will send super secret word
+                : $"name={name}&secret={secret}"; // otherwise we will send super secret word
 
             // setup callback url
             var result = string.IsNullOrEmpty(customCallback)

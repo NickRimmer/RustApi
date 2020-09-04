@@ -4,7 +4,7 @@ You just need to send HTTP POST request with credentials in headers (=
 
 ## Authentication
 To identify user, for each request you should provide user name and secret string via request headers:
-- **ra_u** - header for user name (e.g. 'admin' or 'app-clans')
+- **ra_u** - header for user name (e.g. 'admin', 'app-clans' or 'playerSteamId')
 - **ra_s** - header for secret value
 
 # Call hooks
