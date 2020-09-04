@@ -3,8 +3,6 @@ using Oxide.Ext.RustApi.Business.Services;
 using Oxide.Ext.RustApi.Plugins;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
-using System;
-using System.Collections.Generic;
 
 namespace Oxide.Ext.RustApi.Business.Common
 {
@@ -49,13 +47,13 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// <param name="container">Services container.</param>
         /// <param name="configFileName">Configuration file name.</param>
         /// <returns></returns>
-        private static RustApiOptions GetApiOptions(MicroContainer container, string configFileName = ConfigFileName)
+        private static RustApiOptions GetApiOptions(MicroContainer container)
         {
-            var options = OptionsManager.ReadOptions<RustApiOptions>(configFileName, container);
+            var options = OptionsManager.ReadOptions<RustApiOptions>(ConfigFileName, container);
             if (options == default)
             {
                 options = new RustApiOptions(DefaultEndpoint);
-                OptionsManager.WriteOptions(configFileName, options, container);
+                OptionsManager.WriteOptions(ConfigFileName, options, container);
             }
 
             return options;
