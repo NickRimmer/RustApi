@@ -32,5 +32,10 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <param name="permissions">List of user permissions.</param>
         /// <returns></returns>
         ApiUserInfo AddUser(string name, string secret, params string[] permissions);
+
+        /// <summary>
+        /// Reload users list from config file.
+        /// </summary>
+        void ReloadUsers();
     }
 }

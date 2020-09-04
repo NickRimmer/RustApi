@@ -75,8 +75,16 @@ namespace Oxide.Ext.RustApi
         {
             // read options from file again
             Container.LoadApiOptions();
-
             _logger.Info("Extenstion configuration reloaded");
+        }
+
+        /// <summary>
+        /// Reload users from configuration files
+        /// </summary>
+        public void ReloadUsers()
+        {
+            Container.Get<IAuthenticationService>().ReloadUsers();
+            _logger.Info("Users from config reloaded");
         }
 
         /// <summary>

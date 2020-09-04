@@ -9,23 +9,31 @@ using System.Net;
 namespace Oxide.Ext.RustApi.Business.Services
 {
     /// <inheritdoc />
-    internal class SimpleAuthenticationService : IAuthenticationService
+    internal class AuthenticationService : IAuthenticationService
     {
+        public const string UsersFileName = "rust-api.users.json";
         public const string AdminPermission = "admin";
         public const string PlayerPermission = "player";
 
         private const string UserHeaderName = "ra_u";
         private const string SecretHeaderName = "ra_s";
-        private const string UsersFileName = "rust-api.users.json";
 
-        private readonly List<ApiUserInfo> _users;
-        private readonly ILogger<SimpleAuthenticationService> _logger;
+        private readonly ILogger<AuthenticationService> _logger;
         private readonly MicroContainer _container;
 
-        public SimpleAuthenticationService(ILogger<SimpleAuthenticationService> logger, MicroContainer container)
+        private List<ApiUserInfo> _users;
+
+        public AuthenticationService(ILogger<AuthenticationService> logger, MicroContainer container)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _container = container ?? throw new ArgumentNullException(nameof(container));
+            
+            ReloadUsers();
+        }
+
+        /// <inheritdoc />
+        public void ReloadUsers()
+        {
             _users = OptionsManager.ReadOptions<List<ApiUserInfo>>(UsersFileName, _container, BuildDefaultUsersList);
         }
 

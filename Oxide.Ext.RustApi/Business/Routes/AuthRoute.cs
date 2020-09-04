@@ -9,8 +9,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
 {
     internal class AuthRoute : RouteBase, IAuthRoute
     {
-        public static string LoginRoute = $"auth/login";
-        public static string ConfirmRoute = $"auth/confirm";
+        public static string LoginRoute = "auth/login";
+        public static string ConfirmRoute = "auth/confirm";
         public static string SteamIdRoute = "auth/steamId";
 
         private readonly ISteamConnection _steamConnection;
@@ -54,7 +54,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
             else _logger.Debug($"Logged user with steam ID: {steamId}");
 
             var playerSecret = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var playerInfo = _authService.AddUser(steamId, playerSecret, SimpleAuthenticationService.PlayerPermission);
+            var playerInfo = _authService.AddUser(steamId, playerSecret, AuthenticationService.PlayerPermission);
             _logger.Debug($"Added new user with player permission: {playerInfo.Secret}");
 
             var result = BuildUri(context, $"{SteamIdRoute}", $"key={playerInfo.Secret}");
@@ -80,7 +80,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             apiRoutes.AddRoute(AuthRoute.LoginRoute, args => container.Get<IAuthRoute>().Login(args.Context), true);
             apiRoutes.AddRoute(AuthRoute.ConfirmRoute, args => container.Get<IAuthRoute>().Confirm(args.Context), true);
-            apiRoutes.AddRoute(AuthRoute.SteamIdRoute, args => null);
+            apiRoutes.AddRoute(AuthRoute.SteamIdRoute, args => null, true);
 
             return container;
         }

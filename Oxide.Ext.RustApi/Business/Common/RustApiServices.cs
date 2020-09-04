@@ -10,7 +10,7 @@ namespace Oxide.Ext.RustApi.Business.Common
 {
     internal static class RustApiServices
     {
-        internal const string DefaultConfigFileName = "rust-api.config.json";
+        internal const string ConfigFileName = "rust-api.config.json";
         private const string DefaultEndpoint = "http://*:28017";
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Oxide.Ext.RustApi.Business.Common
                 .Add(typeof(ILogger<>), typeof(UModLogger<>))
                 .AddSingle<IApiServer, ApiServer>()
                 .AddSingle<ISteamConnection, SteamConnection>()
-                .AddSingle<IAuthenticationService, SimpleAuthenticationService>()
+                .AddSingle<IAuthenticationService, AuthenticationService>()
                 .AddSingle<RustApiPlugin>();
 
             // add routes
@@ -49,7 +49,7 @@ namespace Oxide.Ext.RustApi.Business.Common
         /// <param name="container">Services container.</param>
         /// <param name="configFileName">Configuration file name.</param>
         /// <returns></returns>
-        private static RustApiOptions GetApiOptions(MicroContainer container, string configFileName = DefaultConfigFileName)
+        private static RustApiOptions GetApiOptions(MicroContainer container, string configFileName = ConfigFileName)
         {
             var options = OptionsManager.ReadOptions<RustApiOptions>(configFileName, container);
             if (options == default)

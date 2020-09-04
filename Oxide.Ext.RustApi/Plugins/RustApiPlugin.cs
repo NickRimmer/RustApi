@@ -3,7 +3,9 @@ using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Oxide.Ext.RustApi.Business.Services;
 
 namespace Oxide.Ext.RustApi.Plugins
 {
@@ -27,6 +29,7 @@ namespace Oxide.Ext.RustApi.Plugins
             // register commands
             RegisterConsoleCommand("api.help", Help);
             RegisterConsoleCommand("api.reload", ReloadCfg);
+            RegisterConsoleCommand("api.reload_users", ReloadUsers);
             RegisterConsoleCommand("api.version", GetVersion);
             RegisterConsoleCommand("api.commands", GetCommands);
 
@@ -43,7 +46,8 @@ namespace Oxide.Ext.RustApi.Plugins
             {
                 "Console commands:",
                 "> api.help - this message",
-                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.DefaultConfigFileName}",
+                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.ConfigFileName}",
+                $"> api.reload_users - Reload extenstion users from file: {AuthenticationService.UsersFileName}",
                 "> api.version - Installed version of RustApi extension",
                 "> api.commands - List of cached commands",
             });
@@ -55,6 +59,11 @@ namespace Oxide.Ext.RustApi.Plugins
         /// Reload configuration
         /// </summary>
         private void ReloadCfg() => _ext.ReloadConfiguration();
+
+        /// <summary>
+        /// Reload users
+        /// </summary>
+        private void ReloadUsers() => _ext.ReloadUsers();
 
         /// <summary>
         /// Help method to register commands
@@ -83,7 +92,9 @@ namespace Oxide.Ext.RustApi.Plugins
         private void GetCommands()
         {
             var commands = _ext.Container.Get<ICommandRoute>().CommandsInfo;
-            Puts(string.Join(", ", commands));
+            
+            if(commands.Any()) Puts(string.Join(", ", commands));
+            else Puts("Not API commands found");
         }
     }
 }
