@@ -1,35 +1,11 @@
-# Configuration
+# API configuration
 
 Basic configuration file example:
 ```json
 {
   "Endpoint": "http://*:28017",
   "LogToFile": false,
-  "LogLevel": "Error",
-  "Users": [
-    {
-      "Name": "admin",
-      "Secret": "secret1",
-      "Permissions": [
-        "admin"
-      ]
-    },
-    {
-      "Name": "user1",
-      "Secret": "secret2",
-      "Permissions": [
-        "command1"
-      ]
-    },
-    {
-      "Name": "user2",
-      "Secret": "secret3",
-      "Permissions": [
-        "command1",
-	    "hooks"
-      ]
-    }
-  ]
+  "LogLevel": "Error"
 }
 ```
 
@@ -46,7 +22,36 @@ You can specify next levels:
 - `Information` - Info and previous
 - `Debug` - Debug and previous (all logs)
 
-# Users section
+# Users configuration
+```json
+[
+  {
+    "Name": "admin",
+    "Secret": "secret1",
+    "Permissions": [
+      "admin"
+    ]
+  },
+  {
+    "Name": "user1",
+    "Secret": "secret2",
+    "Permissions": [
+      "command1"
+    ]
+  },
+  {
+    "Name": "76561198051734570",
+    "Secret": "06e62911cf8140f4b2c45bda5d9a14d4",
+    "Permissions": [
+      "player",
+      "tester"
+    ]
+  }
+]
+```
+
+Here is just an array of users.
+
 - `Name` - user title _(required)_
 - `Secret` - used to build authentication token _(required)_
 - `Permissions` - list of assigned permissions _(required)_
@@ -54,3 +59,4 @@ You can specify next levels:
 ## Predefined permissions
 - `admin` - grant full access to Api
 - `hooks` - can run any hooks on server
+- `player` - steam authorized users (name will be steam ID)
