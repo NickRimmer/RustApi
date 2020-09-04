@@ -30,8 +30,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// <inheritdoc />
         public Uri Login(HttpListenerContext context)
         {
-            var callbackUri = BuildValidationUrl(context);
-            var steamUrl = _steamConnection.GetLoginUrl(context, callbackUri);
+            var validationUri = BuildValidationUrl(context);
+            var steamUrl = _steamConnection.GetLoginUrl(context, validationUri);
 
             var result = new Uri(steamUrl);
             return result;
@@ -40,6 +40,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// <inheritdoc />
         public Uri Confirm(HttpListenerContext context)
         {
+            // build arguments for steam validation request
             var query = context.Request.Url.Query.TrimStart('?');
             var data = query
                 .Split('&')
@@ -52,6 +53,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
                 return default;
             }
 
+            // extract player Steam ID
             var steamId = _steamConnection.GetSteamId(data);
             var isValid = !string.IsNullOrEmpty(steamId);
 
@@ -61,12 +63,11 @@ namespace Oxide.Ext.RustApi.Business.Routes
                 _logger.Warning($"Invalid login (steam response)");
                 return BuildCallbackUrl(context, null, null);
             }
-            else _logger.Debug($"Logged user with steam ID: {steamId}");
-
-            // generate secrets
+            
+            // register player as RustApi user
             var playerSecret = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var playerInfo = _authService.AddUser(steamId, playerSecret, AuthenticationService.PlayerPermission);
-            _logger.Debug($"Added new user with player permission: {playerInfo.Secret}");
+            _logger.Debug($"Logged user: {steamId} / {playerInfo.Secret}");
 
             var result = BuildCallbackUrl(context, playerInfo.Name, playerInfo.Secret);
             return result;
@@ -82,8 +83,10 @@ namespace Oxide.Ext.RustApi.Business.Routes
             // try to read custom callback value from GET params
             var customCallback = context.Request.QueryString.Get(CustomCallbackQueryParam);
 
-            // setup callback url
-            var result = BuildUri(context, ConfirmRoute, $"{CustomCallbackQueryParam}={customCallback}");
+            // build validation url
+            var result = string.IsNullOrEmpty(customCallback)
+                ? BuildUri(context, ConfirmRoute)
+                : BuildUri(context, ConfirmRoute, $"{CustomCallbackQueryParam}={customCallback}");
 
             return result;
         }
@@ -93,7 +96,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
         /// </summary>
         /// <param name="context">Request context.</param>
         /// <param name="name">Player name value.</param>
-        /// <param name="secret">Player secret value. If empty will be generated url with error message.</param>
+        /// <param name="secret">Player secret value. If value is empty, then will be generated url with 'error' argument.</param>
         /// <returns></returns>
         private static Uri BuildCallbackUrl(HttpListenerContext context, string name, string secret)
         {
