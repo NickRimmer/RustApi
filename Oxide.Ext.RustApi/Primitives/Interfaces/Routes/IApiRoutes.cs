@@ -15,16 +15,18 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <typeparam name="TRequest">Expected data type of request.</typeparam>
         /// <param name="route">Route name.</param>
         /// <param name="handler">Route request arguments.</param>
+        /// <param name="isPublic">Set true to make this route available without user credentials.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler) where TRequest : class;
+        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler, bool isPublic = false) where TRequest : class;
 
         /// <summary>
         /// Route handler without request body.
         /// </summary>
         /// <param name="route">Route name.</param>
         /// <param name="handler">Route request arguments.</param>
+        /// <param name="isPublic">Set true to make this route available without user credentials.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, ApiRouteHandler<object> handler);
+        IApiRoutes AddRoute(string route, ApiRouteHandler<object> handler, bool isPublic = false);
 
         /// <summary>
         /// Route handler without response.
@@ -32,24 +34,27 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <typeparam name="TRequest">Expected data type of request.</typeparam>
         /// <param name="route">Route name.</param>
         /// <param name="handler">Route request arguments.</param>
+        /// <param name="isPublic">Set true to make this route available without user credentials.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandlerNoResponse<TRequest> handler) where TRequest : class;
+        IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandlerNoResponse<TRequest> handler, bool isPublic = false) where TRequest : class;
 
         /// <summary>
         /// Route handler without request body and response.
         /// </summary>
         /// <param name="route">Route name.</param>
         /// <param name="handler">Route request arguments.</param>
+        /// <param name="isPublic">Set true to make this route available without user credentials.</param>
         /// <returns></returns>
-        IApiRoutes AddRoute(string route, ApiRouteHandlerNoResponse<object> handler);
+        IApiRoutes AddRoute(string route, ApiRouteHandlerNoResponse<object> handler, bool isPublic = false);
 
         /// <summary>
         /// Try to get handler for route.
         /// </summary>
-        /// <param name="route"></param>
-        /// <param name="handler"></param>
-        /// <returns></returns>
-        bool TryGetHandler(string route, out ApiRouteHandler<string> handler);
+        /// <param name="route">Route name.</param>
+        /// <param name="handler">Found handler.</param>
+        /// <param name="publicOnly">Looking for public routes only (for example in case of anonymous user).</param>
+        /// <returns>True if route was found.</returns>
+        bool TryGetHandler(string route, out ApiRouteHandler<string> handler, bool publicOnly = false);
     }
 
     /// <summary>

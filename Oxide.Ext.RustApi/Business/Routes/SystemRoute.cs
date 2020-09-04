@@ -1,5 +1,4 @@
 ﻿using Oxide.Ext.RustApi.Business.Common;
-using Oxide.Ext.RustApi.Business.Services;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
 
@@ -46,11 +45,11 @@ namespace Oxide.Ext.RustApi.Business.Routes
             var apiRoutes = container.Get<IApiRoutes>();
 
             apiRoutes
-                .AddRoute($"{ApiRoutes.PublicRoutesPrefix}/system/ping", args => container.Get<ISystemRoute>().OnPing())
-                .AddRoute($"{ApiRoutes.PublicRoutesPrefix}/system/test/debug", args => container.Get<ISystemRoute>().OnTestDebug())
-                .AddRoute($"{ApiRoutes.PublicRoutesPrefix}/system/test/info", args => container.Get<ISystemRoute>().OnTestInfo())
-                .AddRoute($"{ApiRoutes.PublicRoutesPrefix}/system/test/warning", args => container.Get<ISystemRoute>().OnTestWarning())
-                .AddRoute($"{ApiRoutes.PublicRoutesPrefix}/system/test/error", args => container.Get<ISystemRoute>().OnTestError())
+                .AddRoute("system/ping", args => container.Get<ISystemRoute>().OnPing(), true)
+                .AddRoute("system/test/debug", args => container.Get<ISystemRoute>().OnTestDebug(), true)
+                .AddRoute("system/test/info", args => container.Get<ISystemRoute>().OnTestInfo(), true)
+                .AddRoute("system/test/warning", args => container.Get<ISystemRoute>().OnTestWarning(), true)
+                .AddRoute("system/test/error", args => container.Get<ISystemRoute>().OnTestError(), true)
                 .AddRoute("system/user", args => container.Get<ISystemRoute>().OnUserInfo(args.User));
 
             return container;

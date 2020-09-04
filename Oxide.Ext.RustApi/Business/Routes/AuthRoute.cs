@@ -9,8 +9,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
 {
     internal class AuthRoute : RouteBase, IAuthRoute
     {
-        public static string LoginRoute = $"{ApiRoutes.PublicRoutesPrefix}/auth/login";
-        public static string ConfirmRoute = $"{ApiRoutes.PublicRoutesPrefix}/auth/confirm";
+        public static string LoginRoute = $"auth/login";
+        public static string ConfirmRoute = $"auth/confirm";
         public static string SteamIdRoute = "auth/steamId";
 
         private readonly ISteamConnection _steamConnection;
@@ -78,8 +78,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
             container.AddSingle<IAuthRoute, AuthRoute>();
             var apiRoutes = container.Get<IApiRoutes>();
 
-            apiRoutes.AddRoute(AuthRoute.LoginRoute, args => container.Get<IAuthRoute>().Login(args.Context));
-            apiRoutes.AddRoute(AuthRoute.ConfirmRoute, args => container.Get<IAuthRoute>().Confirm(args.Context));
+            apiRoutes.AddRoute(AuthRoute.LoginRoute, args => container.Get<IAuthRoute>().Login(args.Context), true);
+            apiRoutes.AddRoute(AuthRoute.ConfirmRoute, args => container.Get<IAuthRoute>().Confirm(args.Context), true);
             apiRoutes.AddRoute(AuthRoute.SteamIdRoute, args => null);
 
             return container;

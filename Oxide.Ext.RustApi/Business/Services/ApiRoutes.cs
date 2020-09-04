@@ -8,41 +8,49 @@ namespace Oxide.Ext.RustApi.Business.Services
     /// <inheritdoc />
     internal class ApiRoutes : IApiRoutes
     {
-        public const string PublicRoutesPrefix = "public";
-
-        private readonly Dictionary<string, ApiRouteHandler<string>> _routes;
+        private readonly Dictionary<string, RouteInfo> _routes;
 
         public ApiRoutes()
         {
-            _routes = new Dictionary<string, ApiRouteHandler<string>>();
+            _routes = new Dictionary<string, RouteInfo>();
         }
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler) where TRequest : class
-            => AddGeneralRoute(route, handler);
+        public IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler, bool isPublic = false) where TRequest : class
+            => AddGeneralRoute(route, handler, isPublic);
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute(string route, ApiRouteHandler<object> handler)
-            => AddRoute<object>(route, handler);
+        public IApiRoutes AddRoute(string route, ApiRouteHandler<object> handler, bool isPublic = false)
+            => AddRoute<object>(route, handler, isPublic);
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandlerNoResponse<TRequest> handler) where TRequest : class =>
+        public IApiRoutes AddRoute<TRequest>(string route, ApiRouteHandlerNoResponse<TRequest> handler, bool isPublic = false) where TRequest : class =>
             AddGeneralRoute<TRequest>(route, args =>
             {
                 handler.Invoke(args);
                 return default;
-            });
+            }, isPublic);
 
         /// <inheritdoc />
-        public IApiRoutes AddRoute(string route, ApiRouteHandlerNoResponse<object> handler)
-            => AddRoute<object>(route, handler);
+        public IApiRoutes AddRoute(string route, ApiRouteHandlerNoResponse<object> handler, bool isPublic = false)
+            => AddRoute<object>(route, handler, isPublic);
 
         /// <inheritdoc />
-        public bool TryGetHandler(string route, out ApiRouteHandler<string> handler)
+        public bool TryGetHandler(string route, out ApiRouteHandler<string> handler, bool publicOnly = false)
         {
-            var formattedRoute = ApiServer.FormatUrl(route);
-            var result = _routes.TryGetValue(formattedRoute, out handler);
+            handler = default;
 
+            // let's find route with specified name
+            var formattedRoute = ApiServer.FormatUrl(route);
+            var result = _routes.TryGetValue(formattedRoute, out var handlerInfo);
+
+            // if route not found
+            if (!result || handlerInfo == default) return false;
+
+            // if route is not public, but we looking for public handler only
+            if (publicOnly && !handlerInfo.IsPublic) return false;
+
+            handler = handlerInfo.Handler;
             return result;
         }
 
@@ -51,13 +59,16 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// </summary>
         /// <param name="route">Route name.</param>
         /// <param name="handler">Request handler.</param>
+        /// <param name="isPublic">>Set true to make this route available without user credentials.</param>
         /// <returns></returns>
-        private IApiRoutes AddGeneralRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler) where TRequest : class
+        private IApiRoutes AddGeneralRoute<TRequest>(string route, ApiRouteHandler<TRequest> handler, bool isPublic = false) where TRequest : class
         {
             var url = ApiServer.FormatUrl(route);
             if (_routes.ContainsKey(url)) throw new ArgumentException($"Route '{route}' already added", nameof(route));
 
-            _routes.Add(route, args => handler.Invoke(BuildTypedArgs<TRequest>(args)));
+            var routeInfo = new RouteInfo(args => handler.Invoke(BuildTypedArgs<TRequest>(args)), isPublic);
+            _routes.Add(route, routeInfo);
+
             return this;
         }
 
@@ -72,5 +83,27 @@ namespace Oxide.Ext.RustApi.Business.Services
                 args.User,
                 JsonConvert.DeserializeObject<TRequest>(args.Data),
                 args.Context);
+
+        /// <summary>
+        /// Configured route information.
+        /// </summary>
+        private class RouteInfo
+        {
+            public RouteInfo(ApiRouteHandler<string> handler, bool isPublic = false)
+            {
+                Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+                IsPublic = isPublic;
+            }
+
+            /// <summary>
+            /// Route handler.
+            /// </summary>
+            public ApiRouteHandler<string> Handler { get; }
+
+            /// <summary>
+            /// Public route flag.
+            /// </summary>
+            public bool IsPublic { get; }
+        }
     }
 }
