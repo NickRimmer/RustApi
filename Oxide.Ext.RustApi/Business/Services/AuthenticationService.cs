@@ -18,23 +18,25 @@ namespace Oxide.Ext.RustApi.Business.Services
         private const string UserHeaderName = "ra_u";
         private const string SecretHeaderName = "ra_s";
 
+        private static List<ApiUserInfo> Users;
+        private static object UsersLocker = new object();
+
         private readonly ILogger<AuthenticationService> _logger;
         private readonly MicroContainer _container;
 
-        private List<ApiUserInfo> _users;
 
         public AuthenticationService(ILogger<AuthenticationService> logger, MicroContainer container)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _container = container ?? throw new ArgumentNullException(nameof(container));
-            
+
             ReloadUsers();
         }
 
         /// <inheritdoc />
         public void ReloadUsers()
         {
-            _users = OptionsManager.ReadOptions<List<ApiUserInfo>>(UsersFileName, _container, BuildDefaultUsersList);
+            lock (UsersLocker) Users = OptionsManager.ReadOptions<List<ApiUserInfo>>(UsersFileName, _container, BuildDefaultUsersList);
         }
 
         /// <inheritdoc />
@@ -64,7 +66,7 @@ namespace Oxide.Ext.RustApi.Business.Services
                 return false;
             }
 
-            // compare signs
+            // compare secrets
             var result = secret.Equals(userInfo.Secret, StringComparison.InvariantCultureIgnoreCase);
             if (!result) _logger.Warning($"Incorrect 'secret' for user '{user}'");
 
@@ -96,10 +98,10 @@ namespace Oxide.Ext.RustApi.Business.Services
             if (name == null) throw new ArgumentNullException(nameof(name));
             if (secret == null) throw new ArgumentNullException(nameof(secret));
 
-            var exist = _users.SingleOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            var exist = Users.SingleOrDefault(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
 
             // remove exist player info
-            if (exist != default) _users.Remove(exist);
+            if (exist != default) Users.Remove(exist);
 
             var userPermissions = exist?.Permissions ?? new List<string>();
 
@@ -109,8 +111,8 @@ namespace Oxide.Ext.RustApi.Business.Services
 
             // add user
             var result = new ApiUserInfo(name, secret, userPermissions);
-            _users.Add(result);
-            OptionsManager.WriteOptions(UsersFileName, _users, _container);
+            lock (UsersLocker) Users.Add(result);
+            OptionsManager.WriteOptions(UsersFileName, Users, _container);
 
             return result;
         }
@@ -121,12 +123,12 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// <param name="user">User name.</param>
         /// <param name="userInfo">Found user info.</param>
         /// <returns></returns>
-        private bool TryGetUser(string user, out ApiUserInfo userInfo)
+        private static bool TryGetUser(string user, out ApiUserInfo userInfo)
         {
             userInfo = default;
 
             // let's find user options
-            userInfo = _users.FirstOrDefault(x => x.Name.Equals(user, StringComparison.InvariantCultureIgnoreCase));
+            lock (UsersLocker) userInfo = Users.FirstOrDefault(x => x.Name.Equals(user, StringComparison.InvariantCultureIgnoreCase));
             if (userInfo == default) return false;
 
             return true;
@@ -137,7 +139,7 @@ namespace Oxide.Ext.RustApi.Business.Services
         /// </summary>
         /// <param name="container">Services container.</param>
         /// <returns></returns>
-        private List<ApiUserInfo> BuildDefaultUsersList(MicroContainer container)
+        private static List<ApiUserInfo> BuildDefaultUsersList(MicroContainer container)
         {
             var result = new List<ApiUserInfo>
             {
