@@ -1,5 +1,4 @@
-﻿using Oxide.Core;
-using Oxide.Core.Plugins;
+﻿using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Attributes;
 using Oxide.Ext.RustApi.Primitives.Exceptions;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Newtonsoft.Json;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
