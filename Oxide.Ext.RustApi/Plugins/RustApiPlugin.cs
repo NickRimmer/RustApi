@@ -1,13 +1,11 @@
-﻿using System;
-using Oxide.Core;
-using Oxide.Ext.RustApi.Business.Common;
+﻿using Oxide.Ext.RustApi.Business.Common;
+using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Plugins;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Oxide.Core.Libraries.Covalence;
-using Oxide.Ext.RustApi.Primitives.Interfaces;
-using Oxide.Ext.RustApi.Primitives.Models;
+using Oxide.Ext.RustApi.Business.Services;
 
 namespace Oxide.Ext.RustApi.Plugins
 {
@@ -31,7 +29,7 @@ namespace Oxide.Ext.RustApi.Plugins
             // register commands
             RegisterConsoleCommand("api.help", Help);
             RegisterConsoleCommand("api.reload", ReloadCfg);
-            RegisterConsoleCommand("api.users", Users);
+            RegisterConsoleCommand("api.reload_users", ReloadUsers);
             RegisterConsoleCommand("api.version", GetVersion);
             RegisterConsoleCommand("api.commands", GetCommands);
 
@@ -48,8 +46,8 @@ namespace Oxide.Ext.RustApi.Plugins
             {
                 "Console commands:",
                 "> api.help - this message",
-                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.DefaultConfigFileName}",
-                "> api.users - List of registered users",
+                $"> api.reload - Reload extenstion configuration from file: {RustApiServices.ConfigFileName}",
+                $"> api.reload_users - Reload extenstion users from file: {AuthenticationService.UsersFileName}",
                 "> api.version - Installed version of RustApi extension",
                 "> api.commands - List of cached commands",
             });
@@ -63,16 +61,9 @@ namespace Oxide.Ext.RustApi.Plugins
         private void ReloadCfg() => _ext.ReloadConfiguration();
 
         /// <summary>
-        /// List of registered users
+        /// Reload users
         /// </summary>
-        /// <returns></returns>
-        private void Users()
-        {
-            var options = _ext.Container.Get<RustApiOptions>();
-            var users = options.Users.Select(x => x.Name);
-
-            Puts(string.Join(", ", users));
-        }
+        private void ReloadUsers() => _ext.ReloadUsers();
 
         /// <summary>
         /// Help method to register commands
@@ -84,7 +75,7 @@ namespace Oxide.Ext.RustApi.Plugins
             covalence.RegisterCommand(command, this, (caller, s, args) =>
             {
                 if (!caller.IsServer) return false;
-                
+
                 action.Invoke();
                 return true;
             });
@@ -101,7 +92,9 @@ namespace Oxide.Ext.RustApi.Plugins
         private void GetCommands()
         {
             var commands = _ext.Container.Get<ICommandRoute>().CommandsInfo;
-            Puts(string.Join(", ", commands));
+            
+            if(commands.Any()) Puts(string.Join(", ", commands));
+            else Puts("Not API commands found");
         }
     }
 }

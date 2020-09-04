@@ -33,7 +33,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// </summary>
         /// <param name="message"></param>
         void LogDebug(string message);
-        
+
         /// <summary>
         /// Log error message.
         /// </summary>
@@ -46,7 +46,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <param name="message"></param>
         /// <param name="ex"></param>
         void LogException(string message, Exception ex);
-        
+
         /// <summary>
         /// Log warning message.
         /// </summary>
@@ -66,7 +66,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
         /// <param name="args"></param>
         /// <returns></returns>
         object CallHook(string hookName, params object[] args);
-        
+
         /// <summary>
         /// Get list of loaded plugins.
         /// </summary>

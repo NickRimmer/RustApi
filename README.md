@@ -16,8 +16,8 @@ Testing and improvement.
 2. Copy `Oxide.Ext.RustApi.dll` file to `\server\RustDedicated_Data\Managed\Oxide.Ext.RustApi.dll`
 3. Run game server
 
-After server have been started, you can find new configuration file here:
-`\server\oxide\rust-api.config.json`
+After server have been started, you can find new configuration files here:
+`\server\oxide\rust-api.config.json` and `\server\oxide\rust-api.users.json`
 
 ## Configuration
 Configuration file is serialized to JSON [RustApiOption](Oxide.Ext.RustApi/Primitives/Models/RustApiOptions.cs) and [ApiUserInfo](Oxide.Ext.RustApi/Models/ApiUserInfo.cs) objects (you can investigate it, there are summaries for all properties).
@@ -35,11 +35,17 @@ Just add `[ApiCommand(name, permission, ...)]` attribute to your plugin methods.
 [Read more](Commands.md) about api commands.
 
 # Console commands
-- api.help - list of available console api commands
-- api.reload - Reload extenstion configuration from file: `rust-api.config.json`
-- api.users - List of registered users
-- api.version - Installed version of RustApi extension
-- api.commands - Cached API commands
+- `api.help` - list of available console api commands
+- `api.reload` - Reload extenstion configuration from file
+- `api.reload_users` - Reload extenstion users from file
+- `api.version` - Installed version of RustApi extension
+- `api.commands` - Cached API commands
+
+# Players steam authorization
+API service provide authorization of users via `Steam Login page`.  
+New players will be registerd as regular user with `Steam ID` as name and random secret value.  
+
+[Read more](SteamAuth.md) information about Steam authorization.
 
 # Do you have any ideas?
 Feel free to write them in issues, and we will think about it together (;

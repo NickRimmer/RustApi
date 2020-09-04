@@ -1,5 +1,6 @@
 ﻿using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
+using Oxide.Ext.RustApi.Primitives.Models;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -27,6 +28,13 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
         /// <inheritdoc />
         public void OnTestError() => _logger.Error("Error test log");
+
+        /// <inheritdoc />
+        public object OnUserInfo(ApiUserInfo user) => new
+        {
+            user.Name,
+            user.Permissions
+        };
     }
 
     internal static class SystemRouteExtension
@@ -37,11 +45,12 @@ namespace Oxide.Ext.RustApi.Business.Routes
             var apiRoutes = container.Get<IApiRoutes>();
 
             apiRoutes
-                .AddRoute<string>("system/ping", (user, content) => container.Get<ISystemRoute>().OnPing())
-                .AddRoute("system/test/debug", (user) => container.Get<ISystemRoute>().OnTestDebug())
-                .AddRoute("system/test/info", (user) => container.Get<ISystemRoute>().OnTestInfo())
-                .AddRoute("system/test/warning", (user) => container.Get<ISystemRoute>().OnTestWarning())
-                .AddRoute("system/test/error", (user) => container.Get<ISystemRoute>().OnTestError());
+                .AddRoute("system/ping", args => container.Get<ISystemRoute>().OnPing(), true)
+                .AddRoute("system/test/debug", args => container.Get<ISystemRoute>().OnTestDebug(), true)
+                .AddRoute("system/test/info", args => container.Get<ISystemRoute>().OnTestInfo(), true)
+                .AddRoute("system/test/warning", args => container.Get<ISystemRoute>().OnTestWarning(), true)
+                .AddRoute("system/test/error", args => container.Get<ISystemRoute>().OnTestError(), true)
+                .AddRoute("system/user", args => container.Get<ISystemRoute>().OnUserInfo(args.User));
 
             return container;
         }

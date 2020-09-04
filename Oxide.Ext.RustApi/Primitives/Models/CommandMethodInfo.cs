@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Oxide.Ext.RustApi.Primitives.Attributes;
+﻿using Oxide.Ext.RustApi.Primitives.Attributes;
+using System.Reflection;
 
 namespace Oxide.Ext.RustApi.Primitives.Models
 {

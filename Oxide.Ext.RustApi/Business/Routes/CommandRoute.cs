@@ -1,5 +1,4 @@
-﻿using Oxide.Core;
-using Oxide.Core.Plugins;
+﻿using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Attributes;
 using Oxide.Ext.RustApi.Primitives.Exceptions;
@@ -189,7 +188,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             apiRoutes.AddRoute<ApiCommandRequest>(
                 "command",
-                (user, request) => container.Get<ICommandRoute>().OnCallCommand(user, request)
+                args => container.Get<ICommandRoute>().OnCallCommand(args.User, args.Data)
             );
 
             return container;

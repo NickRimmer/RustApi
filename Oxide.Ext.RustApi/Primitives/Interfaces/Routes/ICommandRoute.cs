@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using Oxide.Ext.RustApi.Business.Routes;
-using Oxide.Ext.RustApi.Primitives.Models;
+﻿using Oxide.Ext.RustApi.Primitives.Models;
+using System.Collections.Generic;
 
 namespace Oxide.Ext.RustApi.Primitives.Interfaces
 {
     /// <summary>
     /// Commands route handler.
     /// </summary>
-    public interface ICommandRoute
+    internal interface ICommandRoute
     {
         /// <summary>
         /// On command api call.

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Oxide.Ext.RustApi.Primitives.Models
@@ -49,6 +50,7 @@ namespace Oxide.Ext.RustApi.Primitives.Models
         /// <summary>
         /// Anonymous flag
         /// </summary>
+        [JsonIgnore]
         public bool IsAnonymous { get; }
 
         /// <summary>

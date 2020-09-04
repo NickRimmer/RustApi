@@ -1,8 +1,7 @@
-﻿using System.Security;
-using Oxide.Core;
-using Oxide.Ext.RustApi.Business.Common;
+﻿using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
+using System.Security;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -32,7 +31,7 @@ namespace Oxide.Ext.RustApi.Business.Routes
 
             apiRoutes.AddRoute<ApiHookRequest>(
                 "hook",
-                (user, request) => container.Get<IHookRoute>().OnCallHook(user, request));
+                args => container.Get<IHookRoute>().OnCallHook(args.User, args.Data));
 
             return container;
         }

@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <None Update="rust-api.config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
