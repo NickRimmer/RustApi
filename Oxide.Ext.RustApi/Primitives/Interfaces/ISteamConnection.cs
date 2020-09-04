@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace Oxide.Ext.RustApi.Primitives.Interfaces
 {
     /// <summary>
     /// Steam connection methods.
     /// </summary>
-    public interface ISteamConnection
+    internal interface ISteamConnection
     {
         /// <summary>
         /// Build steam login url with callback url parameter.

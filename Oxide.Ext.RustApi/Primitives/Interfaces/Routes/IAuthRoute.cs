@@ -6,7 +6,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
     /// <summary>
     /// Auth methods.
     /// </summary>
-    public interface IAuthRoute
+    internal interface IAuthRoute
     {
         /// <summary>
         /// Get url for login page.

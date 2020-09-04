@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Oxide.Ext.RustApi.Primitives.Enums;
+using System;
+using System.ComponentModel;
 
 namespace Oxide.Ext.RustApi.Primitives.Models
 {
@@ -13,13 +12,13 @@ namespace Oxide.Ext.RustApi.Primitives.Models
     internal class RustApiOptions
     {
         public RustApiOptions(
-            string endpoint, 
+            string endpoint,
             bool logToFile = false,
             MinimumLogLevel logLevel = MinimumLogLevel.Information
         )
         {
-            if (!Enum.IsDefined(typeof(MinimumLogLevel), logLevel)) 
-                throw new InvalidEnumArgumentException(nameof(logLevel), (int) logLevel, typeof(MinimumLogLevel));
+            if (!Enum.IsDefined(typeof(MinimumLogLevel), logLevel))
+                throw new InvalidEnumArgumentException(nameof(logLevel), (int)logLevel, typeof(MinimumLogLevel));
 
             Endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
             LogToFile = logToFile;

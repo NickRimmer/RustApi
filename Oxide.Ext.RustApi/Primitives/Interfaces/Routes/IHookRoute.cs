@@ -5,7 +5,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
     /// <summary>
     /// Route for hooks execution
     /// </summary>
-    public interface IHookRoute
+    internal interface IHookRoute
     {
         /// <summary>
         /// On Hook execute API request.

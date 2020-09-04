@@ -5,7 +5,7 @@ namespace Oxide.Ext.RustApi.Primitives.Interfaces
     /// <summary>
     /// System and test routes.
     /// </summary>
-    public interface ISystemRoute
+    internal interface ISystemRoute
     {
         /// <summary>
         /// Ping method.
