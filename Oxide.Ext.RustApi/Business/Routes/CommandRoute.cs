@@ -1,13 +1,13 @@
-﻿using Oxide.Core.Plugins;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Oxide.Core.Plugins;
 using Oxide.Ext.RustApi.Business.Common;
 using Oxide.Ext.RustApi.Primitives.Attributes;
 using Oxide.Ext.RustApi.Primitives.Exceptions;
 using Oxide.Ext.RustApi.Primitives.Interfaces;
 using Oxide.Ext.RustApi.Primitives.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace Oxide.Ext.RustApi.Business.Routes
 {
@@ -70,9 +70,8 @@ namespace Oxide.Ext.RustApi.Business.Routes
         {
             _apiPlugins = GetApiPlugins();
             var methodsFound = _apiPlugins.Sum(x => x.Methods.Count);
-            //var methodsNames = string.Join(", ", _apiPlugins.SelectMany(x=>x.Methods.Select(y=>y.ApiInfo.CommandName)))
 
-            _logger.Info($"Api methods list updated: {methodsFound}");
+            _logger.Debug($"Api methods list updated: {methodsFound}");
         }
 
         /// <inheritdoc />
