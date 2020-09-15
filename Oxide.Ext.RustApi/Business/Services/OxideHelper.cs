@@ -13,15 +13,15 @@ namespace Oxide.Ext.RustApi.Business.Services
     {
         public OxideHelper()
         {
-            Interface.uMod.RootPluginManager.OnPluginAdded += OnPluginsUpdate;
-            Interface.uMod.RootPluginManager.OnPluginRemoved += OnPluginsUpdate;
+            Interface.uMod.RootPluginManager.OnPluginAdded += OnPluginsUpdateHandler;
+            Interface.uMod.RootPluginManager.OnPluginRemoved += OnPluginsUpdateHandler;
         }
 
         /// <inheritdoc />
         public event PluginEvent OnPluginsUpdate;
 
         /// <inheritdoc />
-        public T GetExtension<T>() where T : Extension => (T)Interface
+        public T GetExtension<T>() where T : Extension => (T) Interface
             .uMod
             .GetAllExtensions()
             .First(x => x is T);
@@ -49,5 +49,15 @@ namespace Oxide.Ext.RustApi.Business.Services
 
         /// <inheritdoc />
         public IEnumerable<Plugin> GetPlugins() => Interface.uMod.RootPluginManager.GetPlugins();
+
+        /// <summary>
+        /// Event handler on plugins updates.
+        /// </summary>
+        /// <param name="plugin">Updated plugin instance.</param>
+        private void OnPluginsUpdateHandler(Plugin plugin)
+        {
+            if (OnPluginsUpdate == default) LogWarning("No one subscribed to event update events");
+            else OnPluginsUpdate.Invoke(plugin);
+        }
     }
 }
